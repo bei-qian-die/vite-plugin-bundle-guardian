@@ -6,12 +6,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bei-qian-die/vite-plugin-bundle-guardian.git"
+    "url": "https://gitee.com/north-shallow-butterfly/vite-plugin-bundle-guardian.git"
   },
   "bugs": {
-    "url": "https://github.com/bei-qian-die/vite-plugin-bundle-guardian/issues"
+    "url": "https://gitee.com/north-shallow-butterfly/vite-plugin-bundle-guardian/issues"
   },
-  "homepage": "https://github.com/bei-qian-die/vite-plugin-bundle-guardian#readme",
+  "homepage": "https://gitee.com/north-shallow-butterfly/vite-plugin-bundle-guardian#readme",
   "keywords": ["vite", "vite-plugin", "rollup-plugin", "bundle-size", "budget", "dependency-analysis", "sourcemap"],
   "main": "./dist/cjs/index.js",
   "module": "./dist/index.js",
