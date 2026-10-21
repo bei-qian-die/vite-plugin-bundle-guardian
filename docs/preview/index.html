@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>vite-plugin-bundle-guardian · 项目计划书 &amp; 效果预览</title>
+<meta name="description" content="构建产物治理 Vite 插件（体积守护 + 依赖分析）的完整项目计划书与效果图预览，面向应届前端工程师简历项目。">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/components.css">
+</head>
+<body>
+
+<!-- ══════════════ 顶栏 ══════════════ -->
+<header class="topbar">
+  <div class="shell topbar__in">
+    <a class="brand" href="#top">
+      <span class="brand__mark">bg</span>
+      <span class="brand__name">bundle-guardian</span>
+    </a>
+    <nav class="navlinks" aria-label="页面导航">
+      <a href="#why">痛点</a>
+      <a href="#caps">能力</a>
+      <a href="#arch">架构</a>
+      <a href="#algo">核心算法</a>
+      <a href="#preview">效果图</a>
+      <a href="#roadmap">排期</a>
+    </nav>
+    <span class="npm-chip mono">npm i -D <b>vite-plugin-bundle-guardian</b></span>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ══════════════ Hero ══════════════ -->
+<section class="hero">
+  <div class="shell">
+    <div class="hero__grid">
+
+      <div>
+        <p class="build-stamp mono">
+          <span class="dot"></span> BUILD #0427 &nbsp;·&nbsp; commit a3f19c2 &nbsp;·&nbsp; branch feat/dashboard
+        </p>
+
+        <h1 class="hero__title">
+          构建产物<br>治理插件<em>·</em><br>
+          <span style="font-size:.42em;display:block;margin-top:.28em;letter-spacing:-.02em;color:var(--ink-2);font-weight:700;">体积守护 + 依赖分析</span>
+        </h1>
+
+        <p class="lede">
+          让「包体积失控」从<strong>事后发现</strong>变成<strong>提交即拦截</strong>的工程化门禁。
+          在 <code class="mono">generateBundle</code> 钩子里采集产物，用手写 SourceMap 解码做<strong>字节级体积归因</strong>，
+          把每一 KB 精确追到 npm 包，并用 8 条治理规则给出可执行的修复建议。
+        </p>
+
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="#preview">看效果图 ↓</a>
+          <a class="btn btn--ghost" href="#algo">核心算法</a>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi kpi--hot">
+            <span class="kpi__val" data-count="-49.9" data-suffix="%">0%</span>
+            <span class="kpi__key">首屏 JS gzip 降幅</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi__val" data-count="3" data-suffix="%">0%</span>
+            <span class="kpi__key">归因误差（优化前 22%）</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi__val" data-count="641" data-suffix="ms">0ms</span>
+            <span class="kpi__key">27 个产物分析耗时</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi__val" data-count="12" data-suffix=" 次">0 次</span>
+            <span class="kpi__key">CI 拦截体积回归 PR</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 破格：轻微倾斜的终端卡片 -->
+      <div class="term reveal">
+        <div class="term__bar">
+          <span class="term__dots"><i></i><i></i><i></i></span>
+          <span class="term__title">bash — bundle-guardian check</span>
+        </div>
+        <div class="term__body"><span class="t-dim">$</span> <span class="t-white">pnpm bundle-guardian check --ci</span>
+
+<span class="t-accent"> ██</span> bundle-guardian <span class="t-info">v1.0.0</span>      <span class="t-dim">build #0427</span>
+
+ ASSET                   GZIP     Δ BASE    STATUS
+ <span class="t-dim">───────────────────────────────────────────────</span>
+ index-4f1a9c.js       612 KB   +38.2%    <span class="t-err">✖ ERR</span>
+ vendor-8821de.js      331 KB    +1.1%    <span class="t-warn">⚠ WARN</span>
+ echarts-3a77f0.js     268 KB      new    <span class="t-ok">✔ OK</span>
+ index-9c2b.css         27 KB    -2.4%    <span class="t-ok">✔ OK</span>
+ <span class="t-dim">───────────────────────────────────────────────</span>
+ BUDGET                 ACTUAL / LIMIT
+ entry-index         <span class="t-err">████████████░░░░</span>  204%  <span class="t-err">✖</span>
+ per-chunk           <span class="t-err">██████████░░░░░░</span>  134%  <span class="t-err">✖</span>
+ vendor-core         <span class="t-warn">████████████████</span>   98%  <span class="t-warn">⚠</span>
+ <span class="t-dim">───────────────────────────────────────────────</span>
+ <span class="t-err">✖ 1 error</span> · <span class="t-warn">1 warning</span> · <span class="t-dim">blocked in</span> 641ms
+
+ <span class="t-dim">→</span> <span class="t-white">bundle-guardian why index-4f1a9c.js</span></div>
+      </div>
+    </div>
+
+    <!-- 记忆点：压缩漏斗 -->
+    <div class="waterfall reveal" id="wf">
+      <div class="wf-row">
+        <span class="wf-label mono">RAW</span>
+        <div class="wf-track"><div class="wf-fill" data-pct="100"><b>未压缩</b></div></div>
+        <span class="wf-size mono">4.21 MB <i>100%</i></span>
+      </div>
+      <div class="wf-row">
+        <span class="wf-label mono">GZIP</span>
+        <div class="wf-track"><div class="wf-fill" data-pct="33.5"><b>level 9</b></div></div>
+        <span class="wf-size mono">1.41 MB <i>-66.5%</i></span>
+      </div>
+      <div class="wf-row">
+        <span class="wf-label mono">BROTLI</span>
+        <div class="wf-track"><div class="wf-fill" data-pct="26.8"><b>level 11</b></div></div>
+        <span class="wf-size mono">1.13 MB <i>-73.2%</i></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule-hr">
+
+<!-- ══════════════ 01 痛点 ══════════════ -->
+<section class="sec" id="why">
+  <div class="shell">
+    <div class="sec__head reveal">
+      <div>
+        <span class="eyebrow">01 / Problem</span>
+        <h2>为什么这个项目<br>能打到面试官</h2>
+      </div>
+      <p class="lede" style="font-size:1rem;">
+        应届简历里 90% 是「XXX 商城 / XXX 后台」。一个被真实项目 <code class="mono">npm i</code> 下来的工具包，
+        能一次性证明你懂构建原理、有 CI 意识、能产出量化收益 —— 这三件事恰恰是 CRUD 项目证明不了的。
+      </p>
+    </div>
+
+    <div class="pains">
+      <article class="pain reveal">
+        <div class="pain__n mono">P1</div>
+        <h4>体积是悄悄变大的</h4>
+        <p>没人 review 依赖。<code>import _ from 'lodash'</code> 一行代码带进来 71 KB，
+           三个月后首屏 JS 从 600 KB 涨到 1.4 MB，直到线上 LCP 报警才被发现。</p>
+      </article>
+      <article class="pain reveal">
+        <div class="pain__n mono">P2</div>
+        <h4>现有工具只会「看」</h4>
+        <p><code>webpack-bundle-analyzer</code> / <code>rollup-plugin-visualizer</code> 都只出图，
+           闸口在人的自觉上。<code>size-limit</code> 能卡总量，但说不清<strong>是哪个包、经由哪条 import 链</strong>变大。</p>
+      </article>
+      <article class="pain reveal">
+        <div class="pain__n mono">P3</div>
+        <h4>归因数据本身在骗人</h4>
+        <p>按<b>压缩前</b>模块大小累加，terser 压缩后比例会大幅失真 —— lodash 压完可能只剩 40%，
+           而业务代码几乎不缩。报告会指向错误的优化目标。</p>
+      </article>
+    </div>
+
+    <div style="margin-top:var(--s5);" class="reveal">
+      <span class="eyebrow" style="margin-bottom:var(--s3);">Competitive Matrix</span>
+      <h3 style="margin:var(--s2) 0 var(--s3);">与主流方案的差距</h3>
+      <div class="table-wrap">
+        <table class="cmp">
+          <thead>
+            <tr>
+              <th style="min-width:230px;">能力</th>
+              <th>webpack-bundle<br>analyzer</th>
+              <th>rollup-plugin<br>visualizer</th>
+              <th>size-limit</th>
+              <th class="col-own">bundle-guardian</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="grp"><td colspan="5">可视化</td></tr>
+            <tr><td>Treemap 依赖分布</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="col-own yes">✓</td></tr>
+            <tr><td>真实 gzip / brotli 体积</td><td class="no">—</td><td class="mid">部分</td><td class="yes">✓</td><td class="col-own yes">✓</td></tr>
+            <tr class="grp"><td colspan="5">治理 · 核心差异</td></tr>
+            <tr><td>CI 硬门禁 exit 1</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="col-own yes">✓</td></tr>
+            <tr><td>按入口 / chunk / 分组预算</td><td class="no">—</td><td class="no">—</td><td class="mid">部分</td><td class="col-own yes">✓</td></tr>
+            <tr><td><b>依赖引入链路追溯 why</b></td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="col-own yes">✓</td></tr>
+            <tr><td>重复版本检测</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="col-own yes">✓</td></tr>
+            <tr><td>循环依赖检测（Tarjan）</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="col-own yes">✓</td></tr>
+            <tr><td>未使用依赖检测</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="col-own yes">✓</td></tr>
+            <tr><td>可执行修复建议（规则引擎）</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="col-own yes">✓</td></tr>
+            <tr><td>baseline 增量 diff + PR 评论</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="col-own yes">✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:var(--fs-xs);color:var(--muted);margin-top:var(--s2);font-family:var(--font-mono);">
+        MI 结论：竞品都在「观测」层，本项目定位「治理」层 —— Gate + Attribution 是护城河。
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule-hr">
+
+<!-- ══════════════ 02 能力地图 ══════════════ -->
+<section class="sec" id="caps">
+  <div class="shell">
+    <div class="sec__head reveal">
+      <div>
+        <span class="eyebrow">02 / Scope</span>
+        <h2>能力地图 · 三级范围</h2>
+      </div>
+      <p class="lede" style="font-size:1rem;">
+        MVP 只做 L1 + L2，L3 有余力再补。<b>如果时间只剩三周，保 W3（字节归因）+ W4（门禁）+ W6（报告）</b>，
+        其余都可以砍 —— 这三块构成了完整的技术叙事闭环。
+      </p>
+    </div>
+
+    <div class="caps">
+      <article class="cap reveal">
+        <div class="cap__top">
+          <span class="cap__idx">MODULE 01 · 必做</span>
+          <span class="tag tag--accent">Volume Gate</span>
+        </div>
+        <h3>体积守护 Budget Gate</h3>
+        <p>把「性能预算」从口号变成 CI 里真实会红的那一行。</p>
+        <ul>
+          <li><b>四类预算匹配</b>：单产物 / 入口 / 正则分组 / 全局总量</li>
+          <li><b>真实压缩体积</b>：worker 池并行 gzip level 9 + brotli，不用 <code class="mono">size×0.3</code> 估算</li>
+          <li><b>增量基线</b>：<code class="mono">.guardian/baseline.json</code> 入库，<code class="mono">increaseLimit: '5%'</code></li>
+          <li><b>分级拦截</b>：error → <code class="mono">exit 1</code>；warn → 黄字不阻断；本地提示 / CI 真拦</li>
+        </ul>
+      </article>
+
+      <article class="cap reveal">
+        <div class="cap__top">
+          <span class="cap__idx">MODULE 02 · 核心竞争</span>
+          <span class="tag tag--accent">Dependency Intel</span>
+        </div>
+        <h3>依赖分析与归因</h3>
+        <p>不只告诉你「变大了」，而是「谁、从哪来、怎么改」。</p>
+        <ul>
+          <li><b>字节级体积归因</b>：sourcemap 逆向映射，误差 22% → 3%</li>
+          <li><b>引入链追溯</b>：<code class="mono">why echarts</code> 打印最短依赖路径</li>
+          <li><b>重复版本</b>：同名多版本检测 + 给 <code class="mono">pnpm overrides</code> 命令</li>
+          <li><b>循环依赖</b>：module graph 上跑 Tarjan SCC，输出环路径</li>
+          <li><b>未使用依赖</b>：声明 vs 真实 import 差集（带 sideEffects 白名单）</li>
+        </ul>
+      </article>
+
+      <article class="cap reveal">
+        <div class="cap__top">
+          <span class="cap__idx">MODULE 03 · 差异化</span>
+          <span class="tag">Rule Engine</span>
+        </div>
+        <h3>规则引擎（可插拔）</h3>
+        <p>每条内建规则都输出「病因 + 药方」，而不是干巴巴一条警告。</p>
+        <ul>
+          <li><code class="mono">heavy-package</code> → <code class="mono">moment → dayjs(-96%)</code></li>
+          <li><code class="mono">full-locale-import</code> → 提示按需单点引入</li>
+          <li><code class="mono">duplicate-dep</code> / <code class="mono">circular-dep</code> / <code class="mono">unused-dep</code></li>
+          <li><code class="mono">cjs-bundled</code> → 提示 tree-shaking 失效</li>
+          <li>用户可用 <code class="mono">.guardianrc.ts</code> 覆盖级别 / 注入自定义规则</li>
+        </ul>
+      </article>
+
+      <article class="cap reveal">
+        <div class="cap__top">
+          <span class="cap__idx">MODULE 04 · 呈现</span>
+          <span class="tag">Reporters</span>
+        </div>
+        <h3>报告与开发者体验</h3>
+        <p>四类输出 + 一个 dev 态面板，覆盖命令行到团队协作全链路。</p>
+        <ul>
+          <li><b>Terminal</b>：彩色表格 + 预算进度条 + diff 箭头</li>
+          <li><b>HTML</b>：单文件、离线可开、自研 squarified treemap</li>
+          <li><b>Markdown</b>：GitHub Actions 自动贴 PR 评论</li>
+          <li><b>JSON</b>：<code class="mono">diff old.json new.json</code> 出增量 Top10</li>
+          <li><b>Dev 面板</b>：<code class="mono">/__guardian</code> 实时观察 HMR 时的体积跳动</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<hr class="rule-hr">
+
+<!-- ══════════════ 03 架构 ══════════════ -->
+<section class="sec" id="arch">
+  <div class="shell">
+    <div class="sec__head reveal">
+      <div>
+        <span class="eyebrow">03 / Architecture</span>
+        <h2>pnpm monorepo<br>分层设计</h2>
+      </div>
+      <p class="lede" style="font-size:1rem;">
+        <b>core 不认识 Vite，只认识「一组产物 + 一份 sourcemap」。</b>
+        这是依赖倒置：CLI 能对任意 rollup 产物做离线分析，未来接 Webpack / Rspack / esbuild 只需再写一层薄 adapter。
+        这段务必要能讲出来 —— 它是「会写插件」和「会做工具」的分界线。
+      </p>
+    </div>
+
+    <div class="arch">
+      <div class="tree reveal">
+        <div class="tree__line"><b>vite-plugin-bundle-guardian/</b></div>
+        <div class="tree__line"><s>├─</s> <b>packages/</b></div>
+        <div class="tree__line"><s>│  ├─</s> <b>core/</b>            <s>← 纯分析引擎</s></div>
+        <div class="tree__line"><s>│  │  ├─</s> collect.ts</div>
+        <div class="tree__line"><s>│  │  ├─</s> compress.ts      <s>worker pool</s></div>
+        <div class="tree__line hl"><s>│  │  ├─</s> <b>sourcemap.ts</b>  <s>★ VLQ 解码</s></div>
+        <div class="tree__line hl"><s>│  │  ├─</s> <b>attribution.ts</b> <s>★ 字节归因</s></div>
+        <div class="tree__line"><s>│  │  ├─</s> pkg-resolve.ts   <s>pnpm store</s></div>
+        <div class="tree__line"><s>│  │  ├─</s> graph.ts         <s>Tarjan / dup</s></div>
+        <div class="tree__line"><s>│  │  ├─</s> budget.ts</div>
+        <div class="tree__line"><s>│  │  ├─</s> rules/           <s>×8 可插拔</s></div>
+        <div class="tree__line"><s>│  │  └─</s> report/          <s>term/html/md/json</s></div>
+        <div class="tree__line"><s>│  ├─</s> <b>vite/</b>            <s>← 适配层（薄）</s></div>
+        <div class="tree__line"><s>│  ├─</s> <b>cli/</b>             <s>analyze|check|why|diff</s></div>
+        <div class="tree__line"><s>│  └─</s> <b>playground/</b>      <s>Vue3 靶场</s></div>
+        <div class="tree__line"><s>├─</s> .github/workflows/ci.yml</div>
+        <div class="tree__line"><s>└─</s> README.md</div>
+      </div>
+
+      <div class="layers">
+        <div class="layer reveal">
+          <span class="layer__n mono">L1</span>
+          <div>
+            <h4>采集层 · collect</h4>
+            <p>在 <code class="mono">generateBundle</code> 读 <code class="mono">OutputBundle</code>，区分 chunk / asset；
+               丢失 sourcemap 时降级估算并在报告顶部打「精度降级」黄色横幅。</p>
+            <div class="files"><code>collect.ts</code><code>compress.ts</code><code>worker-pool.ts</code></div>
+          </div>
+        </div>
+        <div class="layer reveal">
+          <span class="layer__n mono">L2</span>
+          <div>
+            <h4>归因核 · attribution</h4>
+            <p>手写 Base64-VLQ 解码器，按 generated 列区间回溯源模块，累加 UTF-8 字节；
+               未被映射区间归入 <code class="mono">&lt;runtime&gt;</code> 桶。</p>
+            <div class="files"><code>sourcemap.ts</code><code>attribution.ts</code><code>pkg-resolve.ts</code></div>
+          </div>
+        </div>
+        <div class="layer reveal">
+          <span class="layer__n mono">L3</span>
+          <div>
+            <h4>图算法 · graph</h4>
+            <p>Tarjan 强连通分量找循环依赖；同名多版本入图；BFS 求 <code class="mono">why</code> 最短引入链。
+               注意 ignore <code class="mono">node_modules</code> 避免噪音。</p>
+            <div class="files"><code>graph.ts</code><code>dfs.ts</code><code>pkg-resolve.ts</code></div>
+          </div>
+        </div>
+        <div class="layer reveal">
+          <span class="layer__n mono">L4</span>
+          <div>
+            <h4>治理 + 呈现 · gate &amp; report</h4>
+            <p>规则产出统一 <code class="mono">Diagnostic[]</code> 结构 <code class="mono">{ ruleId, level, pkg, bytes, fix }</code>；
+               四种 reporter 消费同一份数据，保证终端 / HTML / PR 三处口径一致。</p>
+            <div class="files"><code>budget.ts</code><code>rules/*</code><code>report/*</code></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule-hr">
+
+<!-- ══════════════ 04 数据流水线 ══════════════ -->
+<section class="sec" id="flow">
+  <div class="shell">
+    <div class="sec__head reveal">
+      <div>
+        <span class="eyebrow">04 / Pipeline</span>
+        <h2>单次构建的<br>数据流水线</h2>
+      </div>
+      <p class="lede" style="font-size:1rem;">
+        主链在<strong>④ 字节归因</strong>这里和所有竞品分道扬镳：别人用压缩前的模块长度，
+        我们用压缩后的真实字节归属。支线的图算法独立跑，最后统一汇入规则引擎。
+      </p>
+    </div>
+
+    <div class="flowbox reveal">
+      <svg viewBox="0 0 1200 340" role="img" aria-label="构建产物治理数据流水线流程图">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="#5F665C"></path>
+          </marker>
+          <marker id="ar-hot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="#FF4A17"></path>
+          </marker>
+        </defs>
+
+        <!-- ── Row 1 · 主链 ── -->
+        <g>
+          <rect x="16" y="24" width="200" height="52" rx="4" fill="#FFFFFF" stroke="#B4B8AC" stroke-width="1"></rect>
+          <text x="116" y="46" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="700" fill="#131612">① generateBundle 钩子</text>
+          <text x="116" y="62" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5F665C">OutputBundle + chunk.map</text>
+
+          <rect x="252" y="24" width="200" height="52" rx="4" fill="#FFFFFF" stroke="#B4B8AC" stroke-width="1"></rect>
+          <text x="352" y="46" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="700" fill="#131612">② 产物 + sourcemap 采集</text>
+          <text x="352" y="62" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5F665C">AssetRecord[]</text>
+
+          <rect x="488" y="24" width="200" height="52" rx="4" fill="#FFFFFF" stroke="#B4B8AC" stroke-width="1"></rect>
+          <text x="588" y="46" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="700" fill="#131612">③ worker 池 并行压缩</text>
+          <text x="588" y="62" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5F665C">gzip·9 / brotli·11</text>
+
+          <rect x="724" y="24" width="216" height="52" rx="4" fill="#FF4A17" stroke="#FF4A17" stroke-width="1"></rect>
+          <text x="832" y="44" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="800" fill="#FFFFFF">④ Base64-VLQ 字节归因</text>
+          <text x="832" y="61" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#FFE0D6">★ 技术壁垒 · 误差 3%</text>
+
+          <rect x="980" y="24" width="200" height="52" rx="4" fill="#FFFFFF" stroke="#B4B8AC" stroke-width="1"></rect>
+          <text x="1080" y="46" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="700" fill="#131612">⑤ 包名聚合 · gzip 折算</text>
+          <text x="1080" y="62" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5F665C">PkgStat[]</text>
+
+          <path d="M216,50 H248" stroke="#5F665C" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+          <path d="M452,50 H484" stroke="#5F665C" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+          <path d="M688,50 H720" stroke="#5F665C" stroke-width="1.4" fill="none" marker-end="url(#ar-hot)"></path>
+          <path d="M940,50 H976" stroke="#5F665C" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+        </g>
+
+        <!-- ── Row 2 · 依赖图支线 ── -->
+        <g>
+          <rect x="252" y="118" width="200" height="52" rx="4" fill="#F5F6F2" stroke="#B4B8AC" stroke-width="1"></rect>
+          <text x="352" y="140" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="700" fill="#131612">Ⓐ getModuleInfo 遍历</text>
+          <text x="352" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5F665C">依赖 DAG 构建</text>
+
+          <rect x="488" y="118" width="200" height="52" rx="4" fill="#F5F6F2" stroke="#B4B8AC" stroke-width="1"></rect>
+          <text x="588" y="140" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="700" fill="#131612">Ⓑ Tarjan SCC 环检测</text>
+          <text x="588" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5F665C">circular-dep rule</text>
+
+          <rect x="724" y="118" width="216" height="52" rx="4" fill="#F5F6F2" stroke="#B4B8AC" stroke-width="1"></rect>
+          <text x="832" y="140" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="700" fill="#131612">Ⓒ 重复版本 · 最短引入链</text>
+          <text x="832" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5F665C">why / duplicate-dep</text>
+
+          <rect x="980" y="118" width="200" height="52" rx="4" fill="#F5F6F2" stroke="#B4B8AC" stroke-width="1"></rect>
+          <text x="1080" y="140" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="700" fill="#131612">Ⓓ 规则引擎 ×8</text>
+          <text x="1080" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5F665C">Diagnostic[]</text>
+
+          <path d="M352,76 V114" stroke="#5F665C" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+          <path d="M452,144 H484" stroke="#5F665C" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+          <path d="M688,144 H720" stroke="#5F665C" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+          <path d="M940,144 H976" stroke="#5F665C" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+        </g>
+
+        <!-- ── 汇合线 ── -->
+        <path d="M1080,76 V96 H588 V208" stroke="#5F665C" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#ar)"></path>
+        <path d="M1080,170 V190 H588 V208" stroke="#5F665C" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#ar)"></path>
+
+        <!-- ── Row 3 · 治理与输出 ── -->
+        <g>
+          <rect x="488" y="212" width="200" height="52" rx="4" fill="#FFFFFF" stroke="#131612" stroke-width="1.6"></rect>
+          <text x="588" y="234" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="700" fill="#131612">⑥ Budget 校验 + baseline</text>
+          <text x="588" y="250" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5F665C">4 类匹配 · increaseLimit</text>
+
+          <rect x="724" y="212" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#131612" stroke-width="1.6"></rect>
+          <text x="832" y="234" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="700" fill="#131612">⑦ Reporters ×4</text>
+          <text x="832" y="250" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5F665C">term / html / md / json</text>
+
+          <rect x="980" y="212" width="200" height="52" rx="4" fill="#131612" stroke="#131612" stroke-width="1.6"></rect>
+          <text x="1080" y="234" text-anchor="middle" font-family="Archivo, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">⑧ Gate · exit 1</text>
+          <text x="1080" y="250" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#8E9683">PR 评论 + 拦截</text>
+
+          <path d="M688,238 H720" stroke="#5F665C" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+          <path d="M940,238 H976" stroke="#5F665C" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+        </g>
+
+        <!-- 泳道标签 -->
+        <text x="16" y="150" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#868C80">DEPENDENCY</text>
+        <text x="16" y="166" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#868C80">BRANCH</text>
+        <text x="16" y="256" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#FF4A17">GOVERN</text>
+        <text x="16" y="52" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#868C80">MAIN</text>
+        <text x="16" y="68" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" fill="#868C80">CHAIN</text>
+      </svg>
+    </div>
+
+    <div class="flow-note">
+      <div class="algo-step"><span class="algo-step__n">A</span><span>主链产物指标直接进<b>Budget 校验</b>，决定这次构建能不能通过。</span></div>
+      <div class="algo-step"><span class="algo-step__n">B</span><span>依赖图支线产出<b>Diagnostic[]</b>，只做提示与整改建议，一般不阻断构建。</span></div>
+      <div class="algo-step"><span class="algo-step__n">C</span><span>四种 reporter <b>消费同一份数据结构</b>，保证终端、HTML、PR 评论三处口径一致。</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule-hr">
+
+<!-- ══════════════ 05 核心算法 ══════════════ -->
+<section class="sec" id="algo">
+  <div class="shell">
+    <div class="sec__head reveal">
+      <div>
+        <span class="eyebrow">05 / Core Algorithm</span>
+        <h2>★ 基于 SourceMap 的<br>字节级体积归因</h2>
+      </div>
+      <p class="lede" style="font-size:1rem;">
+        这是整个项目<b>唯一有技术壁垒</b>的地方，也是面试时最能拉开差距的一段。
+        把下面这段截图放进 README，比写十行「熟悉 Vite」都有用。
+      </p>
+    </div>
+
+    <div class="algo">
+      <div class="code reveal">
+        <div class="code__bar">
+          <span>packages/core/src/attribution.ts</span>
+          <span>TS</span>
+        </div>
+<pre><span class="c">// 输入：OutputChunk.code + OutputChunk.map</span>
+<span class="c">// 输出：Map&lt;sourcePath, utf8Bytes&gt;  —— 产物里每个字节的主人</span>
+
+<span class="k">const</span> B64 = <span class="s">'ABCDEFGHIJ…xyz0123456789+/'</span>;
+<span class="k">const</span> SHIFT = <span class="n">5</span>, MASK = <span class="n">31</span>, CONT = <span class="n">32</span>;
+
+<span class="k">function</span> <span class="f">decodeVLQ</span>(mappings: <span class="k">string</span>) {
+  <span class="k">const</span> lines: Array&lt;Array&lt;[<span class="k">number</span>,<span class="k">number</span>,<span class="k">number</span>,<span class="k">number</span>]&gt;&gt; = [[]];
+  <span class="k">let</span> srcIdx = <span class="n">0</span>, srcLine = <span class="n">0</span>, srcCol = <span class="n">0</span>;
+  <span class="k">for</span> (<span class="k">let</span> i = <span class="n">0</span>, line = <span class="n">0</span>, genCol = <span class="n">0</span>; i &lt; mappings.length;) {
+    <span class="k">const</span> ch = mappings[i];
+    <span class="k">if</span> (ch === <span class="s">';'</span>) { genCol = <span class="n">0</span>; lines[++line] = []; i++; <span class="k">continue</span>; }
+    <span class="k">if</span> (ch === <span class="s">','</span>) { i++; <span class="k">continue</span>; }
+    <span class="k">const</span> out: <span class="k">number</span>[] = [];
+    <span class="k">for</span> (<span class="k">let</span> n = <span class="n">0</span>; n &lt; <span class="n">4</span>; n++) {      <span class="c">// genColΔ srcIdxΔ srcLineΔ srcColΔ</span>
+      <span class="k">let</span> r = <span class="n">0</span>, shift = <span class="n">0</span>, c: <span class="k">number</span>;
+      <span class="k">do</span> {
+        c = B64.<span class="f">indexOf</span>(mappings[i++]);
+        r += (c &amp; MASK) &lt;&lt; shift;
+        shift += SHIFT;
+      } <span class="k">while</span> (c &amp; CONT);                <span class="c">// 最高位是连续位</span>
+      out.<span class="f">push</span>(r &amp; <span class="n">1</span> ? -(r &gt;&gt;&gt; <span class="n">1</span>) : r &gt;&gt;&gt; <span class="n">1</span>);   <span class="c">// 末位是符号位</span>
+    }
+    genCol += out[<span class="n">0</span>]; srcIdx += out[<span class="n">1</span>];
+    srcLine += out[<span class="n">2</span>]; srcCol += out[<span class="n">3</span>];
+    lines[line].<span class="f">push</span>([genCol, srcIdx, srcLine, srcCol]);
+  }
+  <span class="k">return</span> lines;
+}
+
+<span class="k">export function</span> <span class="f">attribute</span>(chunk: OutputChunk) {
+  <span class="k">const</span> map = chunk.map!;
+  <span class="k">const</span> lines = <span class="f">decodeVLQ</span>(map.mappings);
+  <span class="k">const</span> raw = chunk.code.<span class="f">split</span>(<span class="s">'\n'</span>);
+  <span class="k">const</span> acc = <span class="k">new</span> Map&lt;<span class="k">string</span>, <span class="k">number</span>&gt;();
+
+  lines.<span class="f">forEach</span>((segs, ln) =&gt; {
+    <span class="k">const</span> text = raw[ln] ?? <span class="s">''</span>;
+    <span class="k">for</span> (<span class="k">let</span> i = <span class="n">0</span>; i &lt; segs.length; i++) {
+      <span class="k">const</span> start = segs[i][<span class="n">0</span>];
+      <span class="k">const</span> end = i + <span class="n">1</span> &lt; segs.length
+        ? segs[i + <span class="n">1</span>][<span class="n">0</span>] : text.length;
+      <span class="k">const</span> src = map.sources[segs[i][<span class="n">1</span>]] ?? <span class="s">'&lt;runtime&gt;'</span>;
+      <span class="c">// 关键：按 UTF-8 字节算，不能用 String.length（中文会翻倍）</span>
+      <span class="k">const</span> bytes = Buffer.<span class="f">byteLength</span>(text.<span class="f">slice</span>(start, end));
+      acc.<span class="f">set</span>(src, (acc.<span class="f">get</span>(src) ?? <span class="n">0</span>) + bytes);
+    }
+    <span class="k">const</span> first = segs[<span class="n">0</span>]?.[<span class="n">0</span>] ?? <span class="n">0</span>;
+    <span class="k">if</span> (first &gt; <span class="n">0</span>) <span class="c">// 行首未映射前缀 → banner / runtime</span>
+      acc.<span class="f">set</span>(<span class="s">'&lt;runtime&gt;'</span>, (acc.<span class="f">get</span>(<span class="s">'&lt;runtime&gt;'</span>) ?? <span class="n">0</span>)
+        + Buffer.<span class="f">byteLength</span>(text.<span class="f">slice</span>(<span class="n">0</span>, first)));
+  });
+  <span class="k">return</span> acc;   <span class="c">// → 再交给 pkg-resolve 聚合成 npm 包粒度</span>
+}</pre>
+      </div>
+
+      <div class="reveal">
+        <div class="algo-steps">
+          <div class="algo-step"><span class="algo-step__n">1</span><span><code class="mono">map.mappings</code> 是 VLQ 编码串：<code class="mono">;</code> 分隔 generated 行，<code class="mono">,</code> 分隔 segment。</span></div>
+          <div class="algo-step"><span class="algo-step__n">2</span><span>每个 segment 存的是 <b>增量值</b>（Δ），必须累加才能得到绝对行列。</span></div>
+          <div class="algo-step"><span class="algo-step__n">3</span><span>相邻两个 segment 之间的<b>列区间</b> <code class="mono">[col_i, col_{i+1})</code> 归属同一个源模块。</span></div>
+          <div class="algo-step"><span class="algo-step__n">4</span><span>用 <code class="mono">Buffer.byteLength</code> 而非 <code class="mono">.length</code> —— 中文注释按 UTF-8 是 3 字节。</span></div>
+          <div class="algo-step"><span class="algo-step__n">5</span><span>未被任何 segment 覆盖的尾部 + license 注释 → 归入 <code class="mono">&lt;runtime&gt;</code> 桶。</span></div>
+          <div class="algo-step"><span class="algo-step__n">6</span><span><code class="mono">pkg-resolve</code> 归一化：<code class="mono">.pnpm/echarts@5.5.0/node_modules/echarts/…</code> → <code class="mono">{pkg, version}</code>。</span></div>
+        </div>
+
+        <div class="code" style="box-shadow:var(--sh-1);">
+          <div class="code__bar"><span>为什么不用 module.code.length</span><span>Trade-off</span></div>
+          <pre style="padding:14px 16px;"><span class="c">// 朴素做法：按模块「压缩前」大小累加</span>
+<span class="c">// 问题：terser 会 mangle / drop console / inline</span>
+<span class="c">//       lodash 压完只剩 40%，业务代码几乎不缩</span>
+
+ lodash              71.2 KB  <span class="t-dim">原始</span>  →  28.4 KB <span class="n">实际</span>
+ moment              68.9 KB  <span class="t-dim">原始</span>  →  63.1 KB <span class="n">实际</span>
+ src/utils/helper    12.0 KB  <span class="t-dim">原始</span>  →  11.4 KB <span class="n">实际</span>
+
+ <span class="c">// 朴素算法归因误差 ±22% → 会让你优化错地方</span>
+ <span class="n">// 字节归因误差 ±3%   → 报告可信</span></pre>
+        </div>
+
+        <div style="margin-top:var(--s3);">
+          <span class="eyebrow">Performance Budget</span>
+          <div class="attr" style="margin-top:var(--s2);">
+            <table class="attr" style="margin:0;">
+              <thead><tr><th>优化手段</th><th style="text-align:right;">收益</th></tr></thead>
+              <tbody>
+                <tr><td class="name">worker 池并行压缩（核数 −1）</td><td class="r">2.1s → 0.6s</td></tr>
+                <tr><td class="name">chunk hash 缓存归因结果</td><td class="r">二次分析 80ms</td></tr>
+                <tr><td class="name">sourcemap 缺失降级 + 报告标注</td><td class="r">零配置可用</td></tr>
+                <tr><td class="name">&gt;2MB 产物 brotli 降到 level 5</td><td class="r">耗时减半，体积 +1.5%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule-hr">
+
+<!-- ══════════════ 06 效果图预览 ══════════════ -->
+<section class="sec" id="preview">
+  <div class="shell">
+    <div class="sec__head reveal">
+      <div>
+        <span class="eyebrow">06 / Mockups</span>
+        <h2>效果图预览 · 照着做</h2>
+      </div>
+      <p class="lede" style="font-size:1rem;">
+        四块界面的最终形态。HTML 报告里的 treemap 是<b>自己实现的 squarified 算法</b>，
+        不引 ECharts / D3 —— 报告必须是单文件、离线可打开。
+      </p>
+    </div>
+
+    <div class="pv-tabs reveal" role="tablist" aria-label="效果图切换">
+      <button class="pv-tab" role="tab" aria-selected="true" aria-controls="pv1" id="t1">
+        <span class="pv-tab__n">MOCK 01</span><span class="pv-tab__t">终端 &amp; CI 门禁</span>
+      </button>
+      <button class="pv-tab" role="tab" aria-selected="false" aria-controls="pv2" id="t2">
+        <span class="pv-tab__n">MOCK 02</span><span class="pv-tab__t">HTML 体积报告</span>
+      </button>
+      <button class="pv-tab" role="tab" aria-selected="false" aria-controls="pv3" id="t3">
+        <span class="pv-tab__n">MOCK 03</span><span class="pv-tab__t">PR 评论 &amp; Checks</span>
+      </button>
+      <button class="pv-tab" role="tab" aria-selected="false" aria-controls="pv4" id="t4">
+        <span class="pv-tab__n">MOCK 04</span><span class="pv-tab__t">链路追溯 &amp; Dev 面板</span>
+      </button>
+    </div>
+
+    <!-- ── MOCK 01 · 终端 ── -->
+    <div class="pv-panel reveal" id="pv1" role="tabpanel" aria-labelledby="t1">
+      <div class="pv-frame">
+        <div class="pv-frame__cap">
+          <span class="dot-row"><i></i><i></i><i></i></span>
+          MOCK 01 · CLI check 输出
+          <span style="margin-left:auto;color:var(--danger);">EXIT 1</span>
+        </div>
+        <div class="pv-body" style="padding:0;">
+          <div class="term" style="border-radius:0;border:0;box-shadow:none;transform:none;">
+            <div class="term__body" style="padding:20px 22px;"><span class="t-dim">$</span> <span class="t-white">pnpm bundle-guardian check --ci</span>
+
+<span class="t-accent"> ██</span> vite-plugin-bundle-guardian <span class="t-info">v1.0.0</span>
+    <span class="t-dim">build #0427 · commit a3f19c2 · Mon Oct 21 2026 13:32:41</span>
+
+ BUDGET SUMMARY
+ <span class="t-dim">────────────────────────────────────────────────────────────────────</span>
+ <span class="t-white">NAME              TARGET              ACTUAL / LIMIT        USE   ST</span>
+ entry-index       contains 'index-'   <span class="t-err">612 KB / 300 KB</span>     204%  <span class="t-err">✖</span>
+ per-chunk         each: true          <span class="t-err">331 KB / 200 KB</span>     166%  <span class="t-err">✖</span>
+ vendor-core       pkgs: vue,pinia…    <span class="t-warn">118 KB / 120 KB</span>      98%  <span class="t-warn">⚠</span>
+ css-total         ext: css            <span class="t-ok"> 27 KB /  90 KB</span>      30%  <span class="t-ok">✔</span>
+ <span class="t-dim">────────────────────────────────────────────────────────────────────</span>
+
+ TOP ASSETS  <span class="t-dim">(by gzip, Δ vs baseline a3f19c2^)</span>
+ <span class="t-dim">────────────────────────────────────────────────────────────────────</span>
+ ASSET                  RAW       GZIP    BROTLI    Δ vs BASE
+ index-4f1a9c.js    1.84 MB    <span class="t-err">612 KB</span>   521 KB  <span class="t-err">▲ +38.2%</span>
+ vendor-8821de.js   1.21 MB    <span class="t-warn">331 KB</span>   279 KB  <span class="t-warn">▲  +1.1%</span>
+ echarts-3a77f0.js   926 KB     268 KB   221 KB  <span class="t-dim">·  new</span>
+ element-7c1d.js     612 KB     187 KB   152 KB  <span class="t-ok">▼  -2.4%</span>
+ index-9c2b.css      184 KB      27 KB    23 KB  <span class="t-ok">▼  -2.4%</span>
+ <span class="t-dim">────────────────────────────────────────────────────────────────────</span>
+
+ DIAGNOSTICS  <span class="t-dim">(8 rules scanned · 183 packages · 27 assets)</span>
+ <span class="t-err"> ✖</span> <span class="t-white">heavy-package</span>   <span class="t-dim">lodash@4.17.21 → 71.2 KB</span>
+                  <span class="t-dim">↳</span> <span class="t-ok">lodash-es 按需引入可省 58.7 KB (-82%)</span>
+ <span class="t-err"> ✖</span> <span class="t-white">full-locale</span>     <span class="t-dim">moment/locale/* 全量 41.3 KB</span>
+                  <span class="t-dim">↳</span> <span class="t-ok">moment → dayjs 总体 -96%</span>
+ <span class="t-warn"> ⚠</span> <span class="t-white">duplicate-dep</span>   <span class="t-dim">echarts 5.4.2 / 5.5.0 并存</span>
+                  <span class="t-dim">↳</span> <span class="t-ok">pnpm.overrides 锁定 5.5.0</span>
+ <span class="t-warn"> ⚠</span> <span class="t-white">circular-dep</span>    <span class="t-dim">src/store/user.ts ⇄ src/api/auth.ts</span>
+ <span class="t-info"> ℹ</span> <span class="t-white">unused-dep</span>      <span class="t-dim">qs · js-md5 · clipboard · crypto-js · core-js</span>
+
+ <span class="t-err">✖ 2 errors</span> · <span class="t-warn">2 warnings</span> · <span class="t-info">1 info</span>  <span class="t-dim">analyzed in 641 ms</span>
+ <span class="t-err">✖ Build rejected.</span> <span class="t-dim">Fix budgets or update .guardian/baseline.json</span>
+
+ <span class="t-dim">→</span> <span class="t-white">bundle-guardian why lodash</span>   <span class="t-dim">查看最短引入链</span>
+ <span class="t-dim">→</span> <span class="t-white">bundle-guardian analyze --open</span>  <span class="t-dim">打开可视化报告</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MOCK 02 · HTML 报告 ── -->
+    <div class="pv-panel reveal" id="pv2" role="tabpanel" aria-labelledby="t2" hidden>
+      <div class="pv-frame">
+        <div class="pv-frame__cap">
+          <span class="dot-row"><i></i><i></i><i></i></span>
+          MOCK 02 · dist/__guardian/index.html — 单文件 · 离线可开
+          <span class="tag tag--ok" style="margin-left:auto;">无 CDN 依赖</span>
+        </div>
+        <div class="pv-body">
+
+          <div class="rkpis">
+            <div class="rkpi">
+              <div class="rkpi__k">Total gzip</div>
+              <div class="rkpi__v">1.41<small>MB</small></div>
+              <div class="rkpi__d up">▲ +18.4% vs baseline</div>
+            </div>
+            <div class="rkpi">
+              <div class="rkpi__k">Total brotli</div>
+              <div class="rkpi__v">1.13<small>MB</small></div>
+              <div class="rkpi__d down">▼ −73.2% vs raw</div>
+            </div>
+            <div class="rkpi">
+              <div class="rkpi__k">Largest asset</div>
+              <div class="rkpi__v">612<small>KB</small></div>
+              <div class="rkpi__d" style="color:var(--muted)">index-4f1a9c.js</div>
+            </div>
+            <div class="rkpi">
+              <div class="rkpi__k">Assets / Packages</div>
+              <div class="rkpi__v">27<small> / 183</small></div>
+              <div class="rkpi__d" style="color:var(--muted)">analyzed in 641 ms</div>
+            </div>
+          </div>
+
+          <div class="tm-head">
+            <div>
+              <h4>Treemap · 依赖体积分布（gzip）</h4>
+              <p style="font-size:var(--fs-xs);color:var(--muted);">自研 squarified 布局 · 面积 = gzip 字节 · 悬停高亮</p>
+            </div>
+            <div class="tm-legend">
+              <span><i style="background:#C4241A"></i> 规则命中 · 待优化</span>
+              <span><i style="background:#FF4A17"></i> 三方依赖</span>
+              <span><i style="background:#2E45B8"></i> 三方 · 小包</span>
+              <span><i style="background:#131612"></i> 业务源码</span>
+            </div>
+          </div>
+          <div class="tm-wrap" id="treemap" role="img" aria-label="依赖体积 treemap 分布图"></div>
+
+          <table class="attr">
+            <thead>
+              <tr>
+                <th>包 / 模块</th>
+                <th style="text-align:right;">Gzip</th>
+                <th style="width:28%;">占比</th>
+                <th style="text-align:right;">Δ</th>
+                <th>归因</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bad">
+                <td class="name">lodash <span class="tag tag--danger"> unexpected</span></td>
+                <td class="r">71.2 KB</td>
+                <td><div class="bar"><i style="width:38%;background:#C4241A"></i></div></td>
+                <td class="r up">+71.2</td><td><span class="diag__fix">→ lodash-es −82%</span></td>
+              </tr>
+              <tr class="bad">
+                <td class="name">moment + locale</td>
+                <td class="r">104.4 KB</td>
+                <td><div class="bar"><i style="width:56%;background:#C4241A"></i></div></td>
+                <td class="r up">+41.3</td><td><span class="diag__fix">→ dayjs −96%</span></td>
+              </tr>
+              <tr>
+                <td class="name">echarts</td>
+                <td class="r">268.0 KB</td>
+                <td><div class="bar"><i style="width:100%;background:#FF4A17"></i></div></td>
+                <td class="r">new</td><td style="color:var(--muted)">建议按需注册</td>
+              </tr>
+              <tr>
+                <td class="name">element-plus</td>
+                <td class="r">187.4 KB</td>
+                <td><div class="bar"><i style="width:70%;background:#FF4A17"></i></div></td>
+                <td class="r down">−2.4%</td><td style="color:var(--muted)">已按需引入</td>
+              </tr>
+              <tr>
+                <td class="name">vue + pinia + router</td>
+                <td class="r">118.6 KB</td>
+                <td><div class="bar"><i style="width:44%;background:#FF4A17"></i></div></td>
+                <td class="r">+0.2%</td><td style="color:var(--muted)">vendor-core</td>
+              </tr>
+              <tr>
+                <td class="name">xlsx</td>
+                <td class="r">96.2 KB</td>
+                <td><div class="bar"><i style="width:36%;background:#FF4A17"></i></div></td>
+                <td class="r">new</td><td><span class="diag__fix">→ 动态 import</span></td>
+              </tr>
+              <tr>
+                <td class="name">src/**（业务）</td>
+                <td class="r">142.8 KB</td>
+                <td><div class="bar"><i style="width:53%;background:#131612"></i></div></td>
+                <td class="r up">+8.1%</td><td style="color:var(--muted)">views/dashboard</td>
+              </tr>
+              <tr>
+                <td class="name">&lt;runtime / banner&gt;</td>
+                <td class="r">12.4 KB</td>
+                <td><div class="bar"><i style="width:5%;background:#868C80"></i></div></td>
+                <td class="r">—</td><td style="color:var(--muted)">未映射字节</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4 style="margin:var(--s4) 0 var(--s2);">Diagnostics · 8 rules</h4>
+          <div class="diag">
+            <div class="diag__i e"><span class="diag__lv">ERROR</span>
+              <span class="diag__msg"><b>heavy-package</b> lodash 全量引入 71.2 KB<span>src/views/Dash.vue:12 → import _ from 'lodash'</span></span>
+              <span class="diag__fix">lodash-es −82%</span></div>
+            <div class="diag__i e"><span class="diag__lv">ERROR</span>
+              <span class="diag__msg"><b>full-locale-import</b> moment/locale/* 全量 locale 注入<span>src/utils/date.ts → moment/locale 41.3 KB</span></span>
+              <span class="diag__fix">dayjs −96%</span></div>
+            <div class="diag__i w"><span class="diag__lv">WARN</span>
+              <span class="diag__msg"><b>duplicate-dep</b> echarts@5.4.2 与 echarts@5.5.0 同时进包<span>重复体积 63.8 KB</span></span>
+              <span class="diag__fix">pnpm.overrides</span></div>
+            <div class="diag__i w"><span class="diag__lv">WARN</span>
+              <span class="diag__msg"><b>circular-dep</b> 检测到 1 个循环依赖环<span>store/user.ts → api/auth.ts → store/user.ts</span></span>
+              <span class="diag__fix">抽公共模块</span></div>
+            <div class="diag__i i"><span class="diag__lv">INFO</span>
+              <span class="diag__msg"><b>unused-dep</b> 5 个依赖声明未被引用<span>qs · js-md5 · clipboard · crypto-js · core-js</span></span>
+              <span class="diag__fix">pnpm rm ×5</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MOCK 03 · PR 评论 ── -->
+    <div class="pv-panel reveal" id="pv3" role="tabpanel" aria-labelledby="t3" hidden>
+      <div class="pv-frame">
+        <div class="pv-frame__cap">
+          <span class="dot-row"><i></i><i></i><i></i></span>
+          MOCK 03 · GitHub PR #128 — bundle-guardian bot
+        </div>
+        <div class="pv-body" style="padding:var(--s3);">
+
+          <div class="gh__checks" style="margin-bottom:var(--s4);">
+            <div class="gh__check"><span class="gh__ico ok">✓</span><b>build (18.x)</b><span>32s</span></div>
+            <div class="gh__check"><span class="gh__ico ok">✓</span><b>vitest</b><span>11s</span></div>
+            <div class="gh__check"><span class="gh__ico no">✕</span><b>bundle-guardian / check</b><span>6s · 1 error</span></div>
+            <div class="gh__check" style="border-top:1px solid var(--line);padding-top:9px;">
+              <span style="color:var(--danger);font-size:var(--fs-sm);">
+                <b>1 failing check</b> — 合并已被阻断
+              </span>
+              <span style="margin-left:auto;"></span>
+            </div>
+          </div>
+
+          <div class="gh">
+            <div class="gh__head">
+              <span class="gh__ava">bg</span>
+              <div class="gh__who">
+                <b>bundle-guardian[bot]</b> <span class="tag">bot</span> commented 2 minutes ago
+              </div>
+            </div>
+            <div class="gh__body">
+              <p>## 📦 Bundle Report — <code class="mono">build #0427</code></p>
+              <div class="gh__md">
+                <table>
+                  <thead><tr><th>Metric</th><th>Base (<code>a3f19c2^</code>)</th><th>This PR</th><th>Δ</th></tr></thead>
+                  <tbody>
+                    <tr><td>Initial JS (gzip)</td><td>708 KB</td><td>1,412 KB</td><td style="color:var(--danger);font-weight:700;">▲ +704 KB (+99.4%)</td></tr>
+                    <tr><td>Initial JS (brotli)</td><td>572 KB</td><td>1,128 KB</td><td style="color:var(--danger);font-weight:700;">▲ +556 KB (+97.2%)</td></tr>
+                    <tr><td>CSS (gzip)</td><td>24 KB</td><td>27 KB</td><td style="color:var(--warn);">▲ +3 KB</td></tr>
+                    <tr><td>Asset count</td><td>24</td><td>27</td><td>+3</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>### 🚫 Budget exceeded</p>
+              <div class="gh__md">
+                <table>
+                  <thead><tr><th>Budget</th><th>Limit</th><th>Actual</th><th>Use</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>entry-index</code></td><td>300 KB</td><td>612 KB</td><td style="color:var(--danger);font-weight:700;">204% ✖</td></tr>
+                    <tr><td><code>per-chunk</code></td><td>200 KB</td><td>331 KB</td><td style="color:var(--danger);font-weight:700;">166% ✖</td></tr>
+                    <tr><td><code>vendor-core</code></td><td>120 KB</td><td>118 KB</td><td style="color:var(--warn);">98% ⚠</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>### 🔍 增量 Top 3（本次 PR 新增）</p>
+              <div class="gh__md">
+                <table>
+                  <thead><tr><th>Package</th><th>Gzip</th><th>最短引入链</th><th>建议</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>lodash</code></td><td>71.2 KB</td><td><code>views/Dash.vue → lodash</code></td><td>→ <code>lodash-es</code></td></tr>
+                    <tr><td><code>moment + locale</code></td><td>104.4 KB</td><td><code>utils/date.ts → moment/locale</code></td><td>→ <code>dayjs</code></td></tr>
+                    <tr><td><code>xlsx</code></td><td>96.2 KB</td><td><code>views/Export.vue → xlsx</code></td><td>→ 动态 <code>import()</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p style="color:var(--muted);font-size:var(--fs-xs);border-top:1px solid var(--line);padding-top:12px;">
+                📄 <a href="#">下载完整 HTML 报告</a> · 由 <code class="mono">vite-plugin-bundle-guardian v1.0.0</code> 生成 · 用时 641 ms
+              </p>
+            </div>
+          </div>
+
+          <p style="font-size:var(--fs-xs);color:var(--muted);margin-top:var(--s3);font-family:var(--font-mono);">
+            实现方式：<code class="mono">actions/github-script</code> 读 <code class="mono">dist/__guardian/report.md</code> →
+            <code class="mono">github.rest.issues.createComment()</code>；HTML 报告随 artifact 上传并提供下载链接。
+          </p>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MOCK 04 · why + dev 面板 ── -->
+    <div class="pv-panel reveal" id="pv4" role="tabpanel" aria-labelledby="t4" hidden>
+      <div class="pv-frame">
+        <div class="pv-frame__cap">
+          <span class="dot-row"><i></i><i></i><i></i></span>
+          MOCK 04 · bundle-guardian why + dev overlay
+        </div>
+        <div class="pv-body">
+          <div class="devgrid">
+            <div>
+              <div class="term" style="box-shadow:var(--sh-1);">
+                <div class="term__bar">
+                  <span class="term__dots"><i></i><i></i><i></i></span>
+                  <span class="term__title">bundle-guardian why lodash</span>
+                </div>
+                <div class="term__body"><span class="t-dim">$</span> <span class="t-white">bundle-guardian why lodash</span>
+
+<span class="t-accent"> ██</span> 最短引入链（BFS · depth 3）
+
+ <span class="t-ok">src/main.ts</span>
+  └─ <span class="t-ok">src/views/Dash.vue</span>            <span class="t-dim">depth 1</span>
+      └─ <span class="t-ok">src/composables/useTable.ts</span>   <span class="t-dim">depth 2</span>
+          └─ <span class="t-accent">lodash@4.17.21</span>             <span class="t-dim">depth 3 · 71.2 KB</span>
+
+ 引用点  <span class="t-white">src/composables/useTable.ts:8</span>
+   <span class="t-dim">8 │</span>  <span class="t-dim">import _ from</span> <span class="t-ok">'lodash'</span>
+   <span class="t-dim">9 │</span>  <span class="t-dim">const sorted = _.sortBy(rows, 'date')</span>
+
+ 实际用到的方法   <span class="t-info">sortBy · debounce · cloneDeep</span>  <span class="t-dim">(3 / 319)</span>
+
+ <span class="t-ok">✔ 修复方案</span>
+ <span class="t-dim">1.</span> 改用 Named import（ESM tree-shaking）
+     <span class="t-ok">import sortBy from 'lodash-es/sortBy'</span>   <span class="t-dim">≈ 2.4 KB</span>
+ <span class="t-dim">2.</span> 或直接换 <span class="t-white">es-toolkit</span>（lodash-es 的现代替代）
+     <span class="t-ok">pnpm i es-toolkit</span>                       <span class="t-dim">≈ 1.1 KB</span>
+
+ <span class="t-ok">预计节省</span> <span class="t-white">−58.7 KB gzip（−82%）</span></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="devpanel">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                  <span class="t-white" style="font-weight:600;">/__guardian</span>
+                  <span class="t-dim">vite dev · HMR 实时</span>
+                </div>
+                <div class="t-dim" style="font-size:10px;letter-spacing:.1em;">CURRENT CHUNK GZIP</div>
+                <div style="font-family:var(--font-display);font-weight:900;font-size:1.9rem;color:#FF7A4D;letter-spacing:-.04em;line-height:1.2;">612 KB</div>
+                <div class="t-err" style="font-size:11px;">▲ +38.2% · 超出 entry-index 预算</div>
+                <svg class="spark" viewBox="0 0 300 78" preserveAspectRatio="none" aria-label="体积变化趋势迷你图">
+                  <polyline points="0,58 25,55 50,57 75,52 100,50 125,46 150,40 175,38 200,30 225,26 250,18 275,12 300,10"
+                            fill="none" stroke="#FF7A4D" stroke-width="2"></polyline>
+                  <polyline points="0,58 25,55 50,57 75,52 100,50 125,46 150,40 175,38 200,30 225,26 250,18 275,12 300,10 300,78 0,78"
+                            fill="rgba(255,122,77,.14)" stroke="none"></polyline>
+                  <line x1="0" y1="24" x2="300" y2="24" stroke="#C4241A" stroke-width="1" stroke-dasharray="4 3"></line>
+                  <text x="4" y="20" font-family="JetBrains Mono, monospace" font-size="8" fill="#FF6B5E">budget 300KB</text>
+                </svg>
+                <div style="font-size:10px;color:#6E7666;margin-top:8px;letter-spacing:.06em;">最近 12 次 HMR</div>
+                <div style="border-top:1px solid #262B21;margin-top:12px;padding-top:10px;display:grid;gap:5px;font-size:10.5px;">
+                  <div style="display:flex;justify-content:space-between;"><span class="t-dim">lodash</span><span class="t-err">71.2 KB</span></div>
+                  <div style="display:flex;justify-content:space-between;"><span class="t-dim">moment</span><span class="t-err">104.4 KB</span></div>
+                  <div style="display:flex;justify-content:space-between;"><span class="t-dim">echarts</span><span class="t-warn">268.0 KB</span></div>
+                  <div style="display:flex;justify-content:space-between;"><span class="t-dim">element-plus</span><span class="t-ok">187.4 KB</span></div>
+                  <div style="display:flex;justify-content:space-between;"><span class="t-dim">src/**</span><span class="t-info">142.8 KB</span></div>
+                </div>
+              </div>
+              <p style="font-size:var(--fs-xs);color:var(--muted);margin-top:12px;font-family:var(--font-mono);line-height:1.7;">
+                dev 面板用 <code class="mono">configureServer</code> 挂 middleware，
+                借助 <code class="mono">handleHotUpdate</code> 增量重算，避免每次 HMR 全量压包。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="rule-hr">
+
+<!-- ══════════════ 07 排期 ══════════════ -->
+<section class="sec" id="roadmap">
+  <div class="shell">
+    <div class="sec__head reveal">
+      <div>
+        <span class="eyebrow">07 / Roadmap</span>
+        <h2>8 周排期<br>与验收标准</h2>
+      </div>
+      <p class="lede" style="font-size:1rem;">
+        每周约 15 小时，可与实习 / 毕设并行。<b>W3（字节归因）是整个项目的技术高峰</b>，
+        务必给它留足时间 —— 单测要覆盖：空 map、单行 maps、多源交织、UTF-8 中文四种 case。
+      </p>
+    </div>
+
+    <div class="gantt reveal">
+      <table>
+        <thead>
+          <tr>
+            <th style="min-width:250px;">任务</th>
+            <th class="num">W1</th><th class="num">W2</th><th class="num">W3</th><th class="num">W4</th>
+            <th class="num">W5</th><th class="num">W6</th><th class="num">W7</th><th class="num">W8</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="task"><b>脚手架 + monorepo</b><span>pnpm workspace · vitest · unbuild · changesets</span></td>
+            <td class="wk"><div class="gw"></div><div class="gb sup" style="left:4px;right:4px;">S1</div></td>
+            <td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td>
+          </tr>
+          <tr>
+            <td class="task"><b>产物采集 + 压缩 + baseline</b><span>collect / compress / worker pool</span></td>
+            <td class="wk"></td>
+            <td class="wk"><div class="gb ext" style="left:4px;right:4px;">S2</div></td>
+            <td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td>
+          </tr>
+          <tr>
+            <td class="task" style="color:var(--accent-ink);"><b>★ sourcemap 字节归因</b><span>VLQ 解码 · 列区间归因 · pkg-resolve</span></td>
+            <td class="wk"></td><td class="wk"></td>
+            <td class="wk"><div class="gb core" style="left:4px;right:4px;">S3 ★</div></td>
+            <td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td>
+          </tr>
+          <tr>
+            <td class="task"><b>预算引擎 + CI 门禁</b><span>budget 匹配 · exit 1 · GitHub Actions</span></td>
+            <td class="wk"></td><td class="wk"></td><td class="wk"></td>
+            <td class="wk"><div class="gb core" style="left:4px;right:4px;">S4 ★</div></td>
+            <td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td>
+          </tr>
+          <tr>
+            <td class="task"><b>依赖图 · why / dup / circular / unused</b><span>graph.ts · Tarjan · BFS 最短链</span></td>
+            <td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td>
+            <td class="wk"><div class="gb ext" style="left:4px;right:4px;">S5</div></td>
+            <td class="wk"></td><td class="wk"></td><td class="wk"></td>
+          </tr>
+          <tr>
+            <td class="task" style="color:var(--accent-ink);"><b>★ HTML 报告 + treemap</b><span>自研 squarify · 单文件离线</span></td>
+            <td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td>
+            <td class="wk"><div class="gb core" style="left:4px;right:4px;">S6 ★</div></td>
+            <td class="wk"></td><td class="wk"></td>
+          </tr>
+          <tr>
+            <td class="task"><b>playground 靶场 + 端到端验证</b><span>Vue3 中后台 · 实测 −49.9%</span></td>
+            <td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td>
+            <td class="wk"><div class="gb ext" style="left:4px;right:4px;">S7</div></td>
+            <td class="wk"></td>
+          </tr>
+          <tr>
+            <td class="task"><b>npm 发布 + README + 技术文章</b><span>v1.0.0 · badge · 掘金投稿</span></td>
+            <td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td><td class="wk"></td>
+            <td class="wk"><div class="gb sup" style="left:4px;right:4px;">S8</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:var(--s4);display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:var(--s2);" class="reveal">
+      <div class="rkpi"><div class="rkpi__k">★ Core 必保</div><div class="rkpi__v" style="font-size:1.05rem;">S3 · S4 · S6</div><div class="rkpi__d">归因 + 门禁 + 报告，缺一不成闭环</div></div>
+      <div class="rkpi"><div class="rkpi__k">可砍</div><div class="rkpi__v" style="font-size:1.05rem;">S5 · S8</div><div class="rkpi__d">图算法可降级到 git log 手动分析</div></div>
+      <div class="rkpi"><div class="rkpi__k">单测覆盖率目标</div><div class="rkpi__v">core ≥ 75%</div><div class="rkpi__d">attribution 与 graph 两个模块达标</div></div>
+      <div class="rkpi"><div class="rkpi__k">最小验证 Demo</div><div class="rkpi__v" style="font-size:1.05rem;">preact + moment</div><div class="rkpi__d">归因误差必须 &lt; 3%</div></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot__grid">
+    <div>
+      <div class="foot__big">先做完<br>再<em>做漂亮</em>。</div>
+      <small>vite-plugin-bundle-guardian · Project Spec &amp; Mockup Preview · v1.0.0-draft</small>
+      <small>BUILD #0427 · 生成于 2026-10-21 · 效果图仅供参考实现，实际以仓库代码为准</small>
+    </div>
+    <div style="display:flex;gap:var(--s2);flex-wrap:wrap;">
+      <span class="tag tag--accent">TypeScript</span>
+      <span class="tag">Vite 5 / 6</span>
+      <span class="tag">Rollup Plugin API</span>
+      <span class="tag">Worker Threads</span>
+      <span class="tag">SourceMap VLQ</span>
+      <span class="tag">GitHub Actions</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/main.js"></script>
+</body>
+</html>
