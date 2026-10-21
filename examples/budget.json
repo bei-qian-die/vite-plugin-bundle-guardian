@@ -1,0 +1,5 @@
+[
+  { "name": "per-asset", "each": true, "maxGzip": "2 KB", "warnAt": 0.8 },
+  { "name": "total-gzip", "maxTotal": "10 KB" },
+  { "name": "biggest-file", "contains": "html", "maxTotal": "1 KB" }
+]

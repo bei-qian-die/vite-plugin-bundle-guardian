@@ -1,0 +1,33 @@
+{
+  "name": "bundle-guardian",
+  "version": "1.0.0",
+  "description": "构建产物治理 CLI：volume budget gate + dependency attribution",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bei-qian-die/vite-plugin-bundle-guardian.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bei-qian-die/vite-plugin-bundle-guardian/issues"
+  },
+  "homepage": "https://github.com/bei-qian-die/vite-plugin-bundle-guardian#readme",
+  "bin": {
+    "bundle-guardian": "./dist/index.js"
+  },
+  "keywords": ["bundle", "size", "ci", "budget", "sourcemap"],
+  "main": "./dist/index.js",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && node scripts/postbuild.mjs",
+    "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit"
+  },
+  "dependencies": {
+    "@bundle-guardian/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.6.3"
+  }
+}

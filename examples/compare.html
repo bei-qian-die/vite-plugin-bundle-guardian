@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bundle Compare · before vs after</title>
+<style>
+  :root{--ink:#131612;--muted:#5F665C;--line:#D9DBD2;--line2:#B4B8AC;--bg:#F1F2EE;--surface:#fff;--sunk:#F5F6F2;
+    --ok:#0E6B4F;--danger:#C4241A;--accent:#FF4A17;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding:40px 20px}
+  .wrap{max-width:1180px;margin:0 auto}
+  header{border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:24px}
+  h1{font-size:1.8rem;letter-spacing:-.035em;margin:0 0 6px}
+  h2{font-size:1rem;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:.8rem;margin:0 0 14px}
+  .meta{font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.05em}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:20px}
+  .kpi{background:var(--surface);padding:16px 18px}
+  .kpi b{display:block;font-size:1.6rem;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .kpi b.good{color:var(--ok)} .kpi b.bad{color:var(--danger)}
+  .kpi b small{font-size:.45em;font-weight:600;color:var(--muted)}
+  .kpi span{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .kpi em{display:block;font-style:normal;font-family:var(--mono);font-size:.72rem;margin-top:2px}
+  section{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:22px 24px;margin-bottom:20px}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .cap{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--muted);margin-bottom:6px}
+  table{width:100%;border-collapse:collapse;font-size:.86rem}
+  th{text-align:left;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line2)}
+  td{padding:9px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  td.r,th.r{text-align:right}
+  .mono{font-family:var(--mono)}
+  .up{color:var(--danger)} .down{color:var(--ok)}
+  .list{margin:0;padding-left:18px;font-size:.85rem}
+  .list .none{list-style:none;color:var(--muted);margin-left:-18px}
+  footer{font-family:var(--mono);font-size:.72rem;color:var(--muted);text-align:center;padding-top:12px}
+  @media (max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}.pair{grid-template-columns:1fr}}</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Bundle Compare</h1>
+    <div class="meta">before 2026/10/21 18:06:32 · after 2026/10/21 18:06:56</div>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi"><span>JS gzip</span><b>784.1<small>KB</small></b><em class="down">→ 518.1<small>KB</small></em></div>
+    <div class="kpi"><span>JS 变化</span><b class="good">-33.9%</b><em>−265.9<small>KB</small></em></div>
+    <div class="kpi"><span>CSS 变化</span><b class="good">-60.2%</b><em>50.1<small>KB</small> → 19.9<small>KB</small></em></div>
+    <div class="kpi"><span>诊断</span><b>12 → 6</b><em>已解决 6 条</em></div>
+  </div>
+
+  <section>
+    <h2>体积分布对照</h2>
+    <p class="sub">左：治理前 · 右：治理后 · 面积 = gzip</p>
+    <div class="pair">
+      <div><div class="cap">BEFORE · 784.1<small>KB</small></div><svg viewBox="0 0 1100 300" width="100%" height="300" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0.0" y="0.0" width="385.2" height="298.5" fill="#C4241A" fill-opacity="0.92"><title>echarts · 265.6 KB</title></rect><text x="7.0" y="19.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">echarts</text><text x="7.0" y="35.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">265.6 KB</text><rect x="386.7" y="0.0" width="370.9" height="298.5" fill="#C4241A" fill-opacity="0.92"><title>element-plus · 255.8 KB</title></rect><text x="393.7" y="19.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">element-plus</text><text x="393.7" y="35.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">255.8 KB</text><rect x="759.1" y="0.0" width="199.8" height="202.4" fill="#C4241A" fill-opacity="0.92"><title>zrender · 94.0 KB</title></rect><text x="766.1" y="19.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">zrender</text><text x="766.1" y="35.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">94.0 KB</text><rect x="759.1" y="203.9" width="199.8" height="94.6" fill="#C4241A" fill-opacity="0.92"><title>moment · 44.3 KB</title></rect><text x="766.1" y="222.9" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">moment</text><text x="766.1" y="238.9" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">44.3 KB</text><rect x="960.4" y="0.0" width="138.1" height="74.8" fill="#C4241A" fill-opacity="0.92"><title>lodash · 24.4 KB</title></rect><text x="967.4" y="19.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">lodash</text><text x="967.4" y="35.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">24.4 KB</text><rect x="960.4" y="76.3" width="86.2" height="74.2" fill="#2E45B8" fill-opacity="0.92"><title>@vue/runtime-core · 15.2 KB</title></rect><text x="967.4" y="90.3" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="9" font-weight="600" fill="#ffffff">@vue/runtime-core</text><text x="967.4" y="101.3" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">15.2 KB</text><rect x="1048.1" y="76.3" width="50.4" height="74.2" fill="#2E45B8" fill-opacity="0.92"><title>lodash-es · 9.0 KB</title></rect><rect x="960.4" y="152.0" width="47.9" height="58.6" fill="#C4241A" fill-opacity="0.92"><title>@element-plus/icons-vue · 6.8 KB</title></rect><rect x="1009.8" y="152.0" width="46.5" height="58.6" fill="#2E45B8" fill-opacity="0.92"><title>@sxzz/popperjs-es · 6.6 KB</title></rect><rect x="1057.8" y="152.0" width="40.7" height="58.6" fill="#2E45B8" fill-opacity="0.92"><title>@vue/reactivity · 5.8 KB</title></rect><rect x="960.4" y="212.1" width="51.7" height="43.7" fill="#2E45B8" fill-opacity="0.92"><title>async-validator · 5.5 KB</title></rect><text x="967.4" y="226.1" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="9" font-weight="600" fill="#ffffff">async-validator</text><text x="967.4" y="237.1" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">5.5 KB</text><rect x="960.4" y="257.3" width="51.7" height="41.2" fill="#2E45B8" fill-opacity="0.92"><title>dayjs · 5.2 KB</title></rect><text x="967.4" y="271.3" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="9" font-weight="600" fill="#ffffff">dayjs</text><text x="967.4" y="282.3" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">5.2 KB</text><rect x="1013.6" y="212.1" width="43.5" height="48.0" fill="#2E45B8" fill-opacity="0.92"><title>@vue/runtime-dom · 5.1 KB</title></rect><rect x="1058.5" y="212.1" width="40.0" height="48.0" fill="#2E45B8" fill-opacity="0.92"><title>@app · 4.7 KB</title></rect><rect x="1013.6" y="261.6" width="48.5" height="36.9" fill="#2E45B8" fill-opacity="0.92"><title>@ctrl/tinycolor · 4.4 KB</title></rect><rect x="1063.6" y="261.6" width="34.9" height="36.9" fill="#2E45B8" fill-opacity="0.92"><title>@vueuse/core · 3.2 KB</title></rect></svg></div>
+      <div><div class="cap">AFTER · 518.1<small>KB</small></div><svg viewBox="0 0 1100 300" width="100%" height="300" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0.0" y="0.0" width="537.2" height="298.5" fill="#C4241A" fill-opacity="0.92"><title>element-plus · 244.5 KB</title></rect><text x="7.0" y="19.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">element-plus</text><text x="7.0" y="35.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">244.5 KB</text><rect x="538.7" y="0.0" width="253.4" height="298.5" fill="#C4241A" fill-opacity="0.92"><title>echarts · 115.7 KB</title></rect><text x="545.7" y="19.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">echarts</text><text x="545.7" y="35.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">115.7 KB</text><rect x="793.6" y="0.0" width="158.9" height="226.4" fill="#FF4A17" fill-opacity="0.92"><title>zrender · 55.3 KB</title></rect><text x="800.6" y="19.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">zrender</text><text x="800.6" y="35.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">55.3 KB</text><rect x="793.6" y="227.9" width="158.9" height="70.6" fill="#2E45B8" fill-opacity="0.92"><title>@vue/runtime-core · 17.5 KB</title></rect><text x="800.6" y="246.9" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">@vue/runtime-core</text><text x="800.6" y="262.9" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">17.5 KB</text><rect x="953.9" y="0.0" width="83.9" height="75.9" fill="#2E45B8" fill-opacity="0.92"><title>lodash-es · 10.0 KB</title></rect><text x="960.9" y="14.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="9" font-weight="600" fill="#ffffff">lodash-es</text><text x="960.9" y="25.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">10.0 KB</text><rect x="1039.4" y="0.0" width="59.1" height="75.9" fill="#2E45B8" fill-opacity="0.92"><title>dayjs · 7.1 KB</title></rect><text x="1046.4" y="14.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="9" font-weight="600" fill="#ffffff">dayjs</text><text x="1046.4" y="25.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">7.1 KB</text><rect x="953.9" y="77.4" width="73.2" height="58.7" fill="#2E45B8" fill-opacity="0.92"><title>@vue/reactivity · 6.8 KB</title></rect><text x="960.9" y="91.4" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="9" font-weight="600" fill="#ffffff">@vue/reactivity</text><text x="960.9" y="102.4" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">6.8 KB</text><rect x="1028.6" y="77.4" width="69.9" height="58.7" fill="#C4241A" fill-opacity="0.92"><title>@element-plus/icons-vue · 6.5 KB</title></rect><text x="1035.6" y="91.4" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="9" font-weight="600" fill="#ffffff">@element-plus/icons-vue</text><text x="1035.6" y="102.4" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">6.5 KB</text><rect x="953.9" y="137.6" width="73.3" height="54.2" fill="#2E45B8" fill-opacity="0.92"><title>@sxzz/popperjs-es · 6.3 KB</title></rect><text x="960.9" y="151.6" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="9" font-weight="600" fill="#ffffff">@sxzz/popperjs-es</text><text x="960.9" y="162.6" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">6.3 KB</text><rect x="1028.7" y="137.6" width="69.8" height="54.2" fill="#2E45B8" fill-opacity="0.92"><title>@vue/runtime-dom · 6.0 KB</title></rect><text x="1035.7" y="151.6" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="9" font-weight="600" fill="#ffffff">@vue/runtime-dom</text><text x="1035.7" y="162.6" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">6.0 KB</text><rect x="953.9" y="193.2" width="67.8" height="54.8" fill="#2E45B8" fill-opacity="0.92"><title>@app · 5.9 KB</title></rect><text x="960.9" y="207.2" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="9" font-weight="600" fill="#ffffff">@app</text><text x="960.9" y="218.2" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">5.9 KB</text><rect x="953.9" y="249.5" width="67.8" height="49.0" fill="#2E45B8" fill-opacity="0.92"><title>async-validator · 5.3 KB</title></rect><text x="960.9" y="263.5" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="9" font-weight="600" fill="#ffffff">async-validator</text><text x="960.9" y="274.5" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">5.3 KB</text><rect x="1023.3" y="193.2" width="37.3" height="70.0" fill="#2E45B8" fill-opacity="0.92"><title>@ctrl/tinycolor · 4.2 KB</title></rect><rect x="1062.1" y="193.2" width="36.4" height="70.0" fill="#2E45B8" fill-opacity="0.92"><title>@vueuse/core · 4.1 KB</title></rect><rect x="1023.3" y="264.7" width="41.6" height="33.8" fill="#2E45B8" fill-opacity="0.92"><title>@floating-ui/dom · 2.3 KB</title></rect><rect x="1066.3" y="264.7" width="32.2" height="33.8" fill="#2E45B8" fill-opacity="0.92"><title>@floating-ui/core · 1.8 KB</title></rect></svg></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>包级变化</h2>
+    <p class="sub">按增量升序（最上面是省得最多的）</p>
+    <table>
+      <thead><tr><th>Package</th><th class="r">Before</th><th class="r">After</th><th class="r">Δ</th></tr></thead>
+      <tbody><tr>
+        <td class="mono">echarts</td>
+        <td class="r mono">272.0 KB</td>
+        <td class="r mono">118.4 KB</td>
+        <td class="r mono down">−153.5 KB</td>
+      </tr><tr>
+        <td class="mono">moment</td>
+        <td class="r mono">45.4 KB</td>
+        <td class="r mono">0 B</td>
+        <td class="r mono down">−45.4 KB</td>
+      </tr><tr>
+        <td class="mono">zrender</td>
+        <td class="r mono">96.3 KB</td>
+        <td class="r mono">56.6 KB</td>
+        <td class="r mono down">−39.6 KB</td>
+      </tr><tr>
+        <td class="mono">lodash</td>
+        <td class="r mono">25.0 KB</td>
+        <td class="r mono">0 B</td>
+        <td class="r mono down">−25.0 KB</td>
+      </tr><tr>
+        <td class="mono">element-plus</td>
+        <td class="r mono">262.0 KB</td>
+        <td class="r mono">250.3 KB</td>
+        <td class="r mono down">−11.7 KB</td>
+      </tr><tr>
+        <td class="mono">@element-plus/icons-vue</td>
+        <td class="r mono">7.0 KB</td>
+        <td class="r mono">6.7 KB</td>
+        <td class="r mono down">−292 B</td>
+      </tr><tr>
+        <td class="mono">@sxzz/popperjs-es</td>
+        <td class="r mono">6.7 KB</td>
+        <td class="r mono">6.4 KB</td>
+        <td class="r mono down">−287 B</td>
+      </tr><tr>
+        <td class="mono">async-validator</td>
+        <td class="r mono">5.6 KB</td>
+        <td class="r mono">5.4 KB</td>
+        <td class="r mono down">−217 B</td>
+      </tr><tr>
+        <td class="mono">@ctrl/tinycolor</td>
+        <td class="r mono">4.5 KB</td>
+        <td class="r mono">4.3 KB</td>
+        <td class="r mono down">−164 B</td>
+      </tr><tr>
+        <td class="mono">@floating-ui/dom</td>
+        <td class="r mono">2.4 KB</td>
+        <td class="r mono">2.3 KB</td>
+        <td class="r mono down">−104 B</td>
+      </tr><tr>
+        <td class="mono">@floating-ui/core</td>
+        <td class="r mono">1.9 KB</td>
+        <td class="r mono">1.9 KB</td>
+        <td class="r mono down">−74 B</td>
+      </tr><tr>
+        <td class="mono">@floating-ui/utils</td>
+        <td class="r mono">1.3 KB</td>
+        <td class="r mono">1.2 KB</td>
+        <td class="r mono down">−54 B</td>
+      </tr><tr>
+        <td class="mono">normalize-wheel-es</td>
+        <td class="r mono">1.1 KB</td>
+        <td class="r mono">1.0 KB</td>
+        <td class="r mono down">−47 B</td>
+      </tr><tr>
+        <td class="mono">@vueuse/shared</td>
+        <td class="r mono">1.3 KB</td>
+        <td class="r mono">1.4 KB</td>
+        <td class="r mono up">+94 B</td>
+      </tr><tr>
+        <td class="mono">@vue/shared</td>
+        <td class="r mono">1.4 KB</td>
+        <td class="r mono">1.6 KB</td>
+        <td class="r mono up">+239 B</td>
+      </tr><tr>
+        <td class="mono">@vueuse/core</td>
+        <td class="r mono">3.3 KB</td>
+        <td class="r mono">4.2 KB</td>
+        <td class="r mono up">+883 B</td>
+      </tr></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>诊断变化</h2>
+    <div class="pair">
+      <div>
+        <div class="cap">已解决（6）</div>
+        <ul class="list"><li>full-locale-import:moment</li><li>duplicate-dep:zrender</li><li>no-dynamic-import:echarts</li><li>no-dynamic-import:element-plus</li><li>cjs-bundled:moment</li><li>cjs-bundled:lodash</li></ul>
+      </div>
+      <div>
+        <div class="cap">新增（0）</div>
+        <ul class="list"><li class="none">—</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>Generated by vite-plugin-bundle-guardian · compare · 单文件离线可打开</footer>
+</div>
+</body>
+</html>

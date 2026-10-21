@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-before/
+dist-after/
+coverage/
+*.tsbuildinfo
+.DS_Store
+.guardian/
+.tmp/
+.tmp-*/
+test/.tmp-*/
+*.log

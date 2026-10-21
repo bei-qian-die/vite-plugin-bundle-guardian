@@ -1,0 +1,21 @@
+{
+  "budgets": [
+    { "name": "entry-index", "contains": "index-", "ext": "js", "maxTotal": "300 KB" },
+    { "name": "per-chunk", "each": true, "maxGzip": "200 KB", "warnAt": 0.9 },
+    { "name": "vendor-ui", "pkgs": ["element-plus", "echarts"], "maxTotal": "260 KB" }
+  ],
+  "baseline": {
+    "file": ".guardian/baseline.json",
+    "increaseLimit": "5%"
+  },
+  "rules": {
+    "unused-dep": "warn",
+    "heavy-package": ["error", { "maxGzip": "100 KB" }]
+  },
+  "report": {
+    "html": "dist/__guardian/index.html",
+    "json": "dist/__guardian/report.json",
+    "markdown": "dist/__guardian/report.md"
+  },
+  "cache": true
+}

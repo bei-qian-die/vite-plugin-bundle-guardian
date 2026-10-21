@@ -1,0 +1,39 @@
+{
+  "name": "@bundle-guardian/core",
+  "version": "1.0.0",
+  "description": "构建产物分析引擎：SourceMap 字节级体积归因 + 依赖图分析 + 体积预算门禁（零运行时依赖）",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bei-qian-die/vite-plugin-bundle-guardian.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bei-qian-die/vite-plugin-bundle-guardian/issues"
+  },
+  "homepage": "https://github.com/bei-qian-die/vite-plugin-bundle-guardian#readme",
+  "keywords": ["bundle", "size", "guardian", "sourcemap", "budget", "vite", "rollup", "dependency-analysis"],
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && tsc -p tsconfig.build.cjs.json && node scripts/emit-cjs-pkg.mjs",
+    "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}

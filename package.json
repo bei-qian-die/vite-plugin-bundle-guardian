@@ -1,0 +1,27 @@
+{
+  "name": "vite-plugin-bundle-guardian-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "构建产物治理插件：体积守护 + 依赖分析",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:after": "node scripts/dev.mjs --mode after",
+    "dev:packages": "node scripts/dev.mjs --no-playground",
+    "build": "pnpm -r --filter \"./packages/*\" run build",
+    "test": "pnpm -F @bundle-guardian/core test",
+    "typecheck": "pnpm build && pnpm -r run typecheck",
+    "bench": "node scripts/benchmark-attribution.mjs playground/dist-before",
+    "tg": "pnpm -F @bundle-guardian/core test:guard",
+    "numbers": "node scripts/report-numbers.mjs"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "2.1.9",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  },
+  "packageManager": "pnpm@9.15.9"
+}

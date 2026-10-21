@@ -1,0 +1,37 @@
+{
+  "name": "playground",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "体积治理靶场：故意引入各种体积坏味道，用来验证 bundle-guardian 的治理收益",
+  "scripts": {
+    "build:before": "vite build --mode before --outDir dist-before",
+    "build:after": "vite build --mode after --outDir dist-after",
+    "build": "pnpm build:before && pnpm build:after",
+    "guard:before": "bundle-guardian analyze dist-before --budget .guardian/budget.json",
+    "guard:after": "bundle-guardian analyze dist-after --budget .guardian/budget.json",
+    "check": "bundle-guardian check dist-after --budget .guardian/budget.json --ci",
+    "dev": "vite --mode before",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "clipboard": "^2.0.11",
+    "dayjs": "^1.11.13",
+    "echarts": "^5.5.1",
+    "element-plus": "^2.8.8",
+    "js-md5": "^0.8.3",
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
+    "moment": "^2.30.1",
+    "qs": "^6.13.1",
+    "vue": "^3.5.12",
+    "zrender": "5.4.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vite-plugin-bundle-guardian": "workspace:*",
+    "vue-tsc": "^2.1.10"
+  }
+}

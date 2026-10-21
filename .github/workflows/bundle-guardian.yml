@@ -1,0 +1,69 @@
+name: bundle-guardian
+
+# 每个 PR 都跑一次体积检查，把报告贴成评论。
+# 体积超预算时 check 会以 exit 1 结束，配合 branch protection 就能拦住合并。
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm -F playground build:after
+
+      - name: 体积门禁
+        id: guard
+        run: |
+          cd playground
+          pnpm exec bundle-guardian check dist-after \
+            --budget .guardian/budget.json \
+            --baseline .guardian/baseline.json \
+            --increase-limit 5% \
+            --ci
+        continue-on-error: true
+
+      - name: 上传 HTML 报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-report-${{ github.event.number }}
+          path: playground/dist-after/__guardian/index.html
+
+      - name: 把报告贴成 PR 评论
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const md = fs.readFileSync('playground/dist-after/__guardian/report.md', 'utf8');
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `${md}\n\n---\n📄 [下载完整 HTML 报告](${runUrl}#artifacts)`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            });
+
+      - name: 判定门禁结果
+        if: steps.guard.outcome == 'failure'
+        run: |
+          echo "::error::体积门禁未通过，请查看上面的报告"
+          exit 1

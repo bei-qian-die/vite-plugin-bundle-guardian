@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bundle Report · 2026/10/21 18:07:33</title>
+<style>
+  :root{
+    --bg:#F1F2EE; --surface:#FFFFFF; --surface2:#FAFAF7; --sunk:#F5F6F2;
+    --ink:#131612; --ink2:#33382F; --muted:#5F665C; --line:#D9DBD2; --line2:#B4B8AC;
+    --accent:#FF4A17; --accent-ink:#C22E08; --accent-wash:#FFF0EA;
+    --ok:#0E6B4F; --ok-wash:#E5F3EE; --warn:#B87300; --warn-wash:#FDF3DF; --danger:#C4241A; --danger-wash:#FCEBE9;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.72;
+       -webkit-font-smoothing:antialiased;padding:40px 20px}
+  .wrap{max-width:1180px;margin:0 auto}
+  header{border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:28px}
+  h1{font-size:1.9rem;letter-spacing:-.035em;margin:0 0 6px;font-weight:800}
+  .meta{font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:28px}
+  .kpi{background:var(--surface);padding:16px 18px}
+  .kpi b{display:block;font-size:1.75rem;letter-spacing:-.04em;line-height:1.15;font-variant-numeric:tabular-nums}
+  .kpi b small{font-size:.45em;font-weight:600;color:var(--muted);letter-spacing:0}
+  .kpi span{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .kpi em{display:block;font-style:normal;font-family:var(--mono);font-size:.72rem;margin-top:2px}
+  .up{color:var(--danger)} .down{color:var(--ok)}
+  section{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:22px 24px;margin-bottom:20px}
+  h2{font-size:1rem;margin:0 0 4px;letter-spacing:-.02em}
+  .sub{font-size:.8rem;color:var(--muted);margin:0 0 16px}
+  table{width:100%;border-collapse:collapse;font-size:.86rem}
+  th{text-align:left;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+     color:var(--muted);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line2)}
+  td{padding:9px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  td.r,th.r{text-align:right}
+  tr:hover td{background:var(--surface2)}
+  tr.bad td:first-child{color:var(--danger);font-weight:600}
+  tr.bad{background:var(--danger-wash)}
+  .tm-legend{display:flex;flex-wrap:wrap;gap:14px;margin:0 0 14px;font-size:.78rem;color:var(--muted)}
+  .tm-legend span{display:inline-flex;align-items:center;gap:6px}
+  .tm-legend i{width:11px;height:11px;border-radius:2px;display:inline-block}
+  .tag{display:inline-block;padding:0 6px;margin-left:6px;border-radius:3px;font-size:.68rem;line-height:1.6}
+  .tag--danger{background:var(--danger-wash);color:var(--danger);border:1px solid var(--danger)}
+  .fix{color:var(--ok);font-size:.8rem}
+  .mono{font-family:var(--mono)}
+  .bar{position:relative;height:6px;border-radius:3px;background:var(--sunk);overflow:hidden;min-width:80px}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:3px}
+  .tag{display:inline-flex;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;
+       padding:3px 7px;border-radius:3px;border:1px solid;white-space:nowrap}
+  .t-err{color:var(--danger);border-color:rgba(196,36,26,.3);background:var(--danger-wash)}
+  .t-warn{color:var(--warn);border-color:rgba(184,115,0,.3);background:var(--warn-wash)}
+  .t-ok{color:var(--ok);border-color:rgba(14,107,79,.3);background:var(--ok-wash)}
+  .diag{display:grid;gap:8px}
+  .d{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
+     border:1px solid var(--line);border-left-width:3px;border-radius:4px;padding:11px 13px;background:var(--surface2);font-size:.86rem}
+  .d.e{border-left-color:var(--danger)} .d.w{border-left-color:var(--warn)} .d.i{border-left-color:#2E45B8}
+  .d b{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em}
+  .d.e b{color:var(--danger)} .d.w b{color:var(--warn)} .d.i b{color:#2E45B8}
+  .d small{display:block;color:var(--muted);font-family:var(--mono);font-size:.72rem;margin-top:2px}
+  .fix{font-family:var(--mono);font-size:.7rem;color:var(--ok);background:var(--ok-wash);
+       border:1px solid rgba(14,107,79,.25);padding:4px 8px;border-radius:3px;white-space:nowrap}
+  .tm{border:1px solid var(--line2);border-radius:4px;overflow:hidden;background:var(--sunk)}
+  .banner{border-left:3px solid var(--warn);background:var(--warn-wash);padding:11px 14px;
+          border-radius:4px;margin-bottom:20px;font-size:.86rem}
+  footer{font-family:var(--mono);font-size:.72rem;color:var(--muted);text-align:center;padding-top:12px}
+  @media (max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Bundle Report</h1>
+    <div class="meta">vite-plugin-bundle-guardian · 2026/10/21 18:07:33 · 2 assets / 22 packages · analyzed in 733ms</div>
+  </header>
+
+  
+
+  <div class="kpis">
+    <div class="kpi"><span>Total gzip</span><b>834.2<small>KB</small></b><em class="down">—</em></div>
+    <div class="kpi"><span>Total brotli</span><b>738.4<small>KB</small></b><em>−73.1% vs raw</em></div>
+    <div class="kpi"><span>Largest asset</span><b>784.1<small>KB</small></b><em class="mono">assets/index-BT9_WJPB.js</em></div>
+    <div class="kpi"><span>Budget</span><b>PASS</b><em>0 rules checked</em></div>
+  </div>
+
+  <section>
+    <h2>Size attribution · 依赖体积分布（gzip）</h2>
+    <p class="sub">基于 SourceMap 的字节级归因 · 面积 = gzip 体积 · 悬停查看精确值</p>
+    <div class="tm-legend"><span><i style="background:#C4241A"></i>规则命中 · 待优化</span><span><i style="background:#FF4A17"></i>三方依赖 · 大包</span><span><i style="background:#2E45B8"></i>三方 · 小包</span><span><i style="background:#131612"></i>业务源码</span><span><i style="background:#868C80"></i>runtime / banner</span></div>
+    <div class="tm"><svg viewBox="0 0 1100 340" width="100%" height="340" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="0.0" y="0.0" width="383.0" height="338.5" fill="#C4241A" fill-opacity="0.92"><title>echarts · 265.6 KB</title></rect><text x="7.0" y="19.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">echarts</text><text x="7.0" y="35.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">265.6 KB</text><rect x="384.5" y="0.0" width="368.8" height="338.5" fill="#C4241A" fill-opacity="0.92"><title>element-plus · 255.8 KB</title></rect><text x="391.5" y="19.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">element-plus</text><text x="391.5" y="35.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">255.8 KB</text><rect x="754.8" y="0.0" width="198.7" height="229.6" fill="#C4241A" fill-opacity="0.92"><title>zrender · 94.0 KB</title></rect><text x="761.8" y="19.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">zrender</text><text x="761.8" y="35.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">94.0 KB</text><rect x="754.8" y="231.1" width="198.7" height="107.4" fill="#C4241A" fill-opacity="0.92"><title>moment · 44.3 KB</title></rect><text x="761.8" y="250.1" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">moment</text><text x="761.8" y="266.1" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">44.3 KB</text><rect x="955.0" y="0.0" width="143.5" height="81.3" fill="#2E45B8" fill-opacity="0.92"><title>lodash · 24.4 KB</title></rect><text x="962.0" y="19.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" font-weight="600" fill="#ffffff">lodash</text><text x="962.0" y="35.0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="rgba(255,255,255,.8)">24.4 KB</text><rect x="955.0" y="82.8" width="89.6" height="80.6" fill="#2E45B8" fill-opacity="0.92"><title>@vue/runtime-core · 15.2 KB</title></rect><text x="962.0" y="97.8" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10" font-weight="600" fill="#ffffff">@vue/runtime-core</text><text x="962.0" y="109.8" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">15.2 KB</text><rect x="1046.1" y="82.8" width="52.4" height="80.6" fill="#2E45B8" fill-opacity="0.92"><title>lodash-es · 9.0 KB</title></rect><text x="1053.1" y="96.8" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="9" font-weight="600" fill="#ffffff">lodash-es</text><text x="1053.1" y="107.8" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="8" fill="rgba(255,255,255,.8)">9.0 KB</text><rect x="955.0" y="164.9" width="49.9" height="63.6" fill="#C4241A" fill-opacity="0.92"><title>@element-plus/icons-vue · 6.8 KB</title></rect><rect x="1006.3" y="164.9" width="48.4" height="63.6" fill="#2E45B8" fill-opacity="0.92"><title>@sxzz/popperjs-es · 6.6 KB</title></rect><rect x="1056.2" y="164.9" width="42.3" height="63.6" fill="#2E45B8" fill-opacity="0.92"><title>@vue/reactivity · 5.8 KB</title></rect><rect x="955.0" y="230.1" width="46.4" height="55.0" fill="#2E45B8" fill-opacity="0.92"><title>async-validator · 5.5 KB</title></rect><rect x="955.0" y="286.6" width="46.4" height="51.9" fill="#2E45B8" fill-opacity="0.92"><title>dayjs · 5.2 KB</title></rect><rect x="1002.9" y="230.1" width="49.1" height="48.2" fill="#2E45B8" fill-opacity="0.92"><title>@vue/runtime-dom · 5.1 KB</title></rect><rect x="1053.4" y="230.1" width="45.1" height="48.2" fill="#131612" fill-opacity="0.92"><title>@app · 4.7 KB</title></rect><rect x="1002.9" y="279.7" width="34.4" height="58.8" fill="#2E45B8" fill-opacity="0.92"><title>@ctrl/tinycolor · 4.4 KB</title></rect><rect x="1038.8" y="279.7" width="44.2" height="33.0" fill="#2E45B8" fill-opacity="0.92"><title>@vueuse/core · 3.2 KB</title></rect><rect x="1038.8" y="314.2" width="44.2" height="24.3" fill="#2E45B8" fill-opacity="0.92"><title>@floating-ui/dom · 2.4 KB</title></rect><rect x="1084.5" y="279.7" width="14.0" height="58.8" fill="#2E45B8" fill-opacity="0.92"><title>@floating-ui/core · 1.9 KB</title></rect></svg></div>
+  </section>
+
+  <section>
+    <h2>Attribution · 归因明细</h2>
+    <p class="sub">Top 14 归因包 · 按 gzip 降序</p>
+    <table>
+      <thead><tr><th>包 / 模块</th><th>Version</th><th class="r">Gzip</th><th class="r">Share</th><th style="width:22%">占比</th><th>建议</th></tr></thead>
+      <tbody><tr class="bad">
+      <td class="mono">echarts<span class="tag tag--danger">待优化</span></td>
+      <td class="mono" style="color:#5F665C">5.6.0</td>
+      <td class="r mono">272.0 KB</td>
+      <td class="r mono">32.6%</td>
+      <td><div class="bar"><i style="width:100.0%;background:#C4241A"></i></div></td>
+      <td><span class="fix">检查是否有更轻的替代实现</span></td>
+    </tr><tr class="bad">
+      <td class="mono">element-plus<span class="tag tag--danger">待优化</span></td>
+      <td class="mono" style="color:#5F665C">—</td>
+      <td class="r mono">262.0 KB</td>
+      <td class="r mono">31.4%</td>
+      <td><div class="bar"><i style="width:96.3%;background:#C4241A"></i></div></td>
+      <td><span class="fix">检查是否有更轻的替代实现</span></td>
+    </tr><tr class="bad">
+      <td class="mono">zrender<span class="tag tag--danger">待优化</span></td>
+      <td class="mono" style="color:#5F665C">5.6.1</td>
+      <td class="r mono">96.3 KB</td>
+      <td class="r mono">11.5%</td>
+      <td><div class="bar"><i style="width:35.4%;background:#C4241A"></i></div></td>
+      <td><span class="fix">pnpm.overrides 锁定到 5.6.1</span></td>
+    </tr><tr class="bad">
+      <td class="mono">moment<span class="tag tag--danger">待优化</span></td>
+      <td class="mono" style="color:#5F665C">2.31.0</td>
+      <td class="r mono">45.4 KB</td>
+      <td class="r mono">5.4%</td>
+      <td><div class="bar"><i style="width:16.7%;background:#C4241A"></i></div></td>
+      <td><span class="fix">moment/locale/* 全量注入 → 只引 locale/zh-cn</span></td>
+    </tr><tr>
+      <td class="mono">lodash</td>
+      <td class="mono" style="color:#5F665C">4.18.1</td>
+      <td class="r mono">25.0 KB</td>
+      <td class="r mono">3.0%</td>
+      <td><div class="bar"><i style="width:9.2%;background:#2E45B8"></i></div></td>
+      <td><span style="color:#5F665C">—</span></td>
+    </tr><tr>
+      <td class="mono">@vue/runtime-core</td>
+      <td class="mono" style="color:#5F665C">3.5.44</td>
+      <td class="r mono">15.6 KB</td>
+      <td class="r mono">1.9%</td>
+      <td><div class="bar"><i style="width:5.7%;background:#2E45B8"></i></div></td>
+      <td><span style="color:#5F665C">—</span></td>
+    </tr><tr>
+      <td class="mono">lodash-es</td>
+      <td class="mono" style="color:#5F665C">4.18.1</td>
+      <td class="r mono">9.2 KB</td>
+      <td class="r mono">1.1%</td>
+      <td><div class="bar"><i style="width:3.4%;background:#2E45B8"></i></div></td>
+      <td><span style="color:#5F665C">—</span></td>
+    </tr><tr class="bad">
+      <td class="mono">@element-plus/icons-vue<span class="tag tag--danger">待优化</span></td>
+      <td class="mono" style="color:#5F665C">—</td>
+      <td class="r mono">7.0 KB</td>
+      <td class="r mono">0.8%</td>
+      <td><div class="bar"><i style="width:2.6%;background:#C4241A"></i></div></td>
+      <td><span class="fix">图标 dist 全量 → 改成单组件 import</span></td>
+    </tr><tr>
+      <td class="mono">@sxzz/popperjs-es</td>
+      <td class="mono" style="color:#5F665C">2.11.8</td>
+      <td class="r mono">6.7 KB</td>
+      <td class="r mono">0.8%</td>
+      <td><div class="bar"><i style="width:2.5%;background:#2E45B8"></i></div></td>
+      <td><span style="color:#5F665C">—</span></td>
+    </tr><tr>
+      <td class="mono">@vue/reactivity</td>
+      <td class="mono" style="color:#5F665C">3.5.44</td>
+      <td class="r mono">5.9 KB</td>
+      <td class="r mono">0.7%</td>
+      <td><div class="bar"><i style="width:2.2%;background:#2E45B8"></i></div></td>
+      <td><span style="color:#5F665C">—</span></td>
+    </tr><tr>
+      <td class="mono">async-validator</td>
+      <td class="mono" style="color:#5F665C">4.2.5</td>
+      <td class="r mono">5.6 KB</td>
+      <td class="r mono">0.7%</td>
+      <td><div class="bar"><i style="width:2.1%;background:#2E45B8"></i></div></td>
+      <td><span style="color:#5F665C">—</span></td>
+    </tr><tr>
+      <td class="mono">dayjs</td>
+      <td class="mono" style="color:#5F665C">1.11.23</td>
+      <td class="r mono">5.3 KB</td>
+      <td class="r mono">0.6%</td>
+      <td><div class="bar"><i style="width:1.9%;background:#2E45B8"></i></div></td>
+      <td><span style="color:#5F665C">—</span></td>
+    </tr><tr>
+      <td class="mono">@vue/runtime-dom</td>
+      <td class="mono" style="color:#5F665C">3.5.44</td>
+      <td class="r mono">5.2 KB</td>
+      <td class="r mono">0.6%</td>
+      <td><div class="bar"><i style="width:1.9%;background:#2E45B8"></i></div></td>
+      <td><span style="color:#5F665C">—</span></td>
+    </tr><tr>
+      <td class="mono">@app</td>
+      <td class="mono" style="color:#5F665C">—</td>
+      <td class="r mono">4.8 KB</td>
+      <td class="r mono">0.6%</td>
+      <td><div class="bar"><i style="width:1.8%;background:#131612"></i></div></td>
+      <td><span style="color:#5F665C">—</span></td>
+    </tr></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Assets</h2>
+    <p class="sub">按 gzip 降序</p>
+    <table>
+      <thead><tr><th>File</th><th class="r">Raw</th><th class="r">Gzip</th><th class="r">Brotli</th><th class="r">Δ base</th></tr></thead>
+      <tbody><tr>
+      <td class="mono">assets/index-BT9_WJPB.js</td>
+      <td class="r mono">2.38 MB</td>
+      <td class="r mono">784.1 KB</td>
+      <td class="r mono">699.5 KB</td>
+      <td class="r mono"><span style="color:#868C80">—</span></td>
+    </tr><tr>
+      <td class="mono">assets/index-Cx7oaSfu.css</td>
+      <td class="r mono">370.4 KB</td>
+      <td class="r mono">50.1 KB</td>
+      <td class="r mono">39.0 KB</td>
+      <td class="r mono"><span style="color:#868C80">—</span></td>
+    </tr></tbody>
+    </table>
+  </section>
+
+  
+
+  <section>
+    <h2>Diagnostics</h2>
+    <p class="sub">9 条</p>
+    <div class="diag"><div class="d e">
+      <b>ERROR</b>
+      <span>assets/index-BT9_WJPB.js 单产物 gzip 784.1 KB，超出建议值<small>assets/index-BT9_WJPB.js</small></span>
+      <span><span class="fix">用 build.rollupOptions.output.manualChunks 按厂商/路由拆分</span></span>
+    </div><div class="d e">
+      <b>ERROR</b>
+      <span>echarts@5.6.0 占了 272.0 KB gzip<small>../../../node_modules/.pnpm/echarts@5.6.0/node_modules/echarts/lib/core/echarts.js</small></span>
+      <span><span class="fix">检查是否有更轻的替代实现</span></span>
+    </div><div class="d e">
+      <b>ERROR</b>
+      <span>element-plus 占了 262.0 KB gzip<small>../../../node_modules/.pnpm/element-plus@2.14.7_vue@3.5.44_typescript@5.9.3_/node_modules/element-plus/es/components/date-picker-panel/src/date-picker-com/panel-date-range.vue_vue_type_script_setup_true_lang.mjs</small></span>
+      <span><span class="fix">检查是否有更轻的替代实现</span></span>
+    </div><div class="d e">
+      <b>ERROR</b>
+      <span>moment 全量引入国际化的资源<small>../../../node_modules/.pnpm/moment@2.31.0/node_modules/moment/locale/ja.js</small></span>
+      <span><span class="fix">moment/locale/* 全量注入 → 只引 locale/zh-cn</span></span>
+    </div><div class="d e">
+      <b>ERROR</b>
+      <span>@element-plus/icons-vue 全量引入国际化的资源<small>../../../node_modules/.pnpm/@element-plus+icons-vue@2.3.2_vue@3.5.44_typescript@5.9.3_/node_modules/@element-plus/icons-vue/dist/index.js</small></span>
+      <span><span class="fix">图标 dist 全量 → 改成单组件 import</span></span>
+    </div><div class="d w">
+      <b>WARN</b>
+      <span>zrender 并存 2 个版本：5.6.1 / 5.4.4</span>
+      <span><span class="fix">pnpm.overrides 锁定到 5.6.1</span></span>
+    </div><div class="d w">
+      <b>WARN</b>
+      <span>echarts（272.0 KB）落在首屏入口 chunk 里<small>../../../node_modules/.pnpm/echarts@5.6.0/node_modules/echarts/lib/core/echarts.js</small></span>
+      <span><span class="fix">改成 () =&gt; import() 懒加载，配合 prefetch</span></span>
+    </div><div class="d w">
+      <b>WARN</b>
+      <span>element-plus（262.0 KB）落在首屏入口 chunk 里<small>../../../node_modules/.pnpm/element-plus@2.14.7_vue@3.5.44_typescript@5.9.3_/node_modules/element-plus/es/components/date-picker-panel/src/date-picker-com/panel-date-range.vue_vue_type_script_setup_true_lang.mjs</small></span>
+      <span><span class="fix">改成 () =&gt; import() 懒加载，配合 prefetch</span></span>
+    </div><div class="d w">
+      <b>WARN</b>
+      <span>检测到循环依赖（2 个模块）<small>C:/Users/qiuzh/WorkBuddy/2026-10-21-13-32-33/vite-plugin-bundle-guardian/playground/src/api/auth.ts → C:/Users/qiuzh/WorkBuddy/2026-10-21-13-32-33/vite-plugin-bundle-guardian/playground/src/store/user.ts → C:/Users/qiuzh/WorkBuddy/2026-10-21-13-32-33/vite-plugin-bundle-guardian/playground/src/api/auth.ts</small></span>
+      <span><span class="fix">抽离公共模块 / 用依赖注入打破环</span></span>
+    </div></div>
+  </section>
+
+  <footer>Generated by vite-plugin-bundle-guardian · 无外部依赖，可离线打开</footer>
+</div>
+</body>
+</html>
