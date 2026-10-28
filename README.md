@@ -5,7 +5,7 @@
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![online](https://img.shields.io/badge/online-analyzer-FF4A17)
 
-> 仓库：<https://github.com/bei-qian-die/bundle-guardian>（Gitee 镜像：<https://gitee.com/north-shallow-butterfly/vite-plugin-bundle-guardian>；`.github/workflows/` 里的两个 workflow 在 Gitee Go / GitHub Actions 上都能直接用）
+> 仓库：<https://github.com/bei-qian-die/vite-plugin-bundle-guardian>（Gitee 镜像：<https://gitee.com/north-shallow-butterfly/vite-plugin-bundle-guardian>；`.github/workflows/` 里的两个 workflow 在 Gitee Go / GitHub Actions 上都能直接用）
 > 在线分析器：<https://qiu-portfolio.app.workbuddy.host/analyzer/?sharecode=5EF3LGDWAO>
 
 > **构建产物治理插件：体积守护 + 依赖分析**
