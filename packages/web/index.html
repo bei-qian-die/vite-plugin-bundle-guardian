@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bundle-guardian · 体积归因报告查看器</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%23FF4A17'/></svg>">
+<link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap bar">
+    <div class="brand">
+      <span class="mark"></span>
+      <div>
+        <h1>bundle-guardian 体积归因查看器</h1>
+        <p>上传 <code>analyze --json</code> 生成的报告，浏览器端完成解析与渲染</p>
+      </div>
+    </div>
+    <div class="barright">
+      <div class="badge" id="coreBadge">由 @beiqiandie/core 驱动</div>
+      <div class="authchip" id="authChip"></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="card toolbar">
+    <div class="row">
+      <button class="btn" id="btnBefore">载入示例 · 优化前</button>
+      <button class="btn" id="btnAfter">载入示例 · 优化后</button>
+      <button class="btn ghost" id="btnBaseline">设为对比基线</button>
+      <label class="btn ghost file">
+        上传 report.json
+        <input type="file" id="fileInput" accept=".json,application/json" hidden>
+      </label>
+      <span class="sep"></span>
+      <button class="btn ghost" id="btnShare">生成分享链接</button>
+      <button class="btn ghost" id="btnExport">导出 JSON</button>
+      <span class="hint" id="status">示例数据来自真实靶场：Vue 3 + Element Plus + ECharts</span>
+    </div>
+    <div class="row drop" id="drop">把 report.json 拖到这里也可以</div>
+  </section>
+
+  <section id="meta" class="hidden"></section>
+
+  <section class="grid" id="cards"></section>
+
+  <section class="card" id="histCard">
+    <h2>分析历史</h2>
+    <p class="sub">登录后每次载入或上传都会自动归档到云端，换台设备、换个浏览器打开还是同一份；点「载入」可回放当时的完整报告。</p>
+    <div class="histmeta" id="histMeta"></div>
+
+    <div class="loginbox hidden" id="histGate">
+      <div class="loginrow">
+        <input class="input" id="phoneInput" placeholder="手机号" inputmode="numeric" autocomplete="tel" maxlength="11">
+        <button class="mini" id="btnSendCode" type="button">获取验证码</button>
+      </div>
+      <p class="fielderr" id="phoneErr"></p>
+      <div class="loginrow">
+        <input class="input" id="codeInput" placeholder="验证码" inputmode="numeric" autocomplete="one-time-code" maxlength="8">
+        <button class="btn" id="btnLogin" type="button">登录 / 注册</button>
+      </div>
+      <p class="hint" id="loginHint">首次登录会自动注册，无需设置密码。</p>
+    </div>
+
+    <div id="histList"></div>
+    <div class="row hidden" id="histOps">
+      <button class="mini danger" id="btnClearHist">清空全部历史</button>
+    </div>
+  </section>
+
+  <section class="card hidden" id="compareCard">
+    <h2>对比基线增量</h2>
+    <div id="compareBody"></div>
+  </section>
+
+  <section class="card hidden" id="treeCard">
+    <h2>包级体积归因（字节级）</h2>
+    <p class="sub">每块面积 = 该包在产物中的 gzip 体积占比，按 sourcemap 列区间逐 KB 归因而来</p>
+    <div id="treemap" class="treemap"></div>
+  </section>
+
+  <section class="card hidden" id="pkgCard">
+    <h2>包明细 Top 15</h2>
+    <div class="tablewrap"><table id="pkgTable"></table></div>
+  </section>
+
+  <section class="card hidden" id="diagCard">
+    <h2>治理规则诊断</h2>
+    <div id="diagList"></div>
+  </section>
+
+  <section class="card hidden" id="traceCard">
+    <h2>引入链追溯</h2>
+    <p class="sub">基于报告内的模块图做 BFS，找出是谁把它带进来的（等价于 CLI 的 <code>why</code> 命令）</p>
+    <div class="row">
+      <input class="input" id="traceInput" list="pkgList" placeholder="输入包名或模块片段，如 echarts">
+      <datalist id="pkgList"></datalist>
+      <button class="btn" id="btnTrace">追溯</button>
+    </div>
+    <div id="traceOut" class="trace"></div>
+  </section>
+
+</main>
+
+<footer class="wrap foot">
+  <span>纯静态站点：无后端、无网络请求，上传的报告只存在你自己的浏览器里</span>
+  <span class="mono" id="footVer"></span>
+</footer>
+
+<script type="module" src="./src/main.ts"></script>
+</body>
+</html>

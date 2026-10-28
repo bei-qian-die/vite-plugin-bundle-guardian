@@ -10,3 +10,6 @@ coverage/
 .tmp-*/
 test/.tmp-*/
 *.log
+
+# 门户站构建产物（dist-portal 不被 dist/ 规则覆盖）
+dist-portal/

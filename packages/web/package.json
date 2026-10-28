@@ -1,0 +1,17 @@
+{
+  "name": "bundle-guardian-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "bundle-guardian 报告查看器（纯静态，浏览器端渲染，复用 @beiqiandie/core）",
+  "scripts": {
+    "dev": "vite",
+    "build": "node ../../scripts/build-web.mjs"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11"
+  },
+  "dependencies": {
+    "@tencent-ai/workbuddy-cloud-sdk": "0.1.4-dev.ca27990.202610161713"
+  }
+}
