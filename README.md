@@ -1,6 +1,6 @@
 # vite-plugin-bundle-guardian
 
-[![repo](https://img.shields.io/badge/repo-GitHub-181717?logo=github)](https://github.com/bei-qian-die/bundle-guardian)
+[![repo](https://img.shields.io/badge/repo-GitHub-181717?logo=github)](https://github.com/bei-qian-die/vite-plugin-bundle-guardian)
 ![npm](https://img.shields.io/npm/v/vite-plugin-bundle-guardian)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![online](https://img.shields.io/badge/online-analyzer-FF4A17)
