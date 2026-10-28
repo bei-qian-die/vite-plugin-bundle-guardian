@@ -1,5 +1,5 @@
 {
-  "name": "@bundle-guardian/core",
+  "name": "@beiqiandie/core",
   "version": "1.0.0",
   "description": "构建产物分析引擎：SourceMap 字节级体积归因 + 依赖图分析 + 体积预算门禁（零运行时依赖）",
   "type": "module",

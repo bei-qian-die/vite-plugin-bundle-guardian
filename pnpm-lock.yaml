@@ -20,7 +20,7 @@ importers:
 
   packages/cli:
     dependencies:
-      '@bundle-guardian/core':
+      '@beiqiandie/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -45,7 +45,7 @@ importers:
 
   packages/vite:
     dependencies:
-      '@bundle-guardian/core':
+      '@beiqiandie/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -55,6 +55,16 @@ importers:
       typescript:
         specifier: ^5.6.3
         version: 5.9.3
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.21(@types/node@22.20.5)
+
+  packages/web:
+    dependencies:
+      '@tencent-ai/workbuddy-cloud-sdk':
+        specifier: 0.1.4-dev.ca27990.202610161713
+        version: 0.1.4-dev.ca27990.202610161713
+    devDependencies:
       vite:
         specifier: ^5.4.11
         version: 5.4.21(@types/node@22.20.5)
@@ -451,6 +461,10 @@ packages:
 
   '@sxzz/popperjs-es@2.11.8':
     resolution: {integrity: sha512-wOwESXvvED3S8xBmcPWHs2dUuzrE4XiZeFu7e1hROIJkm02a49N120pmOXxY33sBb6hArItm5W5tcg1cBtV+HQ==}
+
+  '@tencent-ai/workbuddy-cloud-sdk@0.1.4-dev.ca27990.202610161713':
+    resolution: {integrity: sha512-HyrXFiilbYFxDGF5pvl1MhBYvE9QnK39uJjiiefX07k7ppl2UPKfl6KWaN9yIzD1DtAGycl3fXaYOzHmvlIMpg==}
+    engines: {node: '>=18'}
 
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
@@ -1340,6 +1354,8 @@ snapshots:
     optional: true
 
   '@sxzz/popperjs-es@2.11.8': {}
+
+  '@tencent-ai/workbuddy-cloud-sdk@0.1.4-dev.ca27990.202610161713': {}
 
   '@types/estree@1.0.9': {}
 

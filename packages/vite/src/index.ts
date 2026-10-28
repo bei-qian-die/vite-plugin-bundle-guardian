@@ -28,14 +28,14 @@ import {
   renderTerminal,
   shouldFail,
   toJson,
-} from '@bundle-guardian/core';
+} from '@beiqiandie/core';
 import type {
   AnalysisResult,
   Bundle,
   GuardianOptions,
   ModuleNode,
   OutputItem,
-} from '@bundle-guardian/core';
+} from '@beiqiandie/core';
 
 export type BundleGuardianOptions = GuardianOptions;
 

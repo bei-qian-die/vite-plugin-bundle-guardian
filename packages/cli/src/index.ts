@@ -45,7 +45,7 @@ import {
   type GuardianOptions,
   type JsonReport,
   type OutputItem,
-} from '@bundle-guardian/core';
+} from '@beiqiandie/core';
 
 const HELP = `
   ██ bundle-guardian v1.0.0

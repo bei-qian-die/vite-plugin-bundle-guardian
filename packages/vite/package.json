@@ -30,7 +30,7 @@
     "typecheck": "tsc -p tsconfig.build.json --noEmit"
   },
   "dependencies": {
-    "@bundle-guardian/core": "workspace:*"
+    "@beiqiandie/core": "workspace:*"
   },
   "peerDependencies": {
     "vite": ">=5.0.0"

@@ -1,5 +1,5 @@
 /**
- * @bundle-guardian/core
+ * @beiqiandie/core
  *
  * 纯分析引擎：不依赖 Vite / Rollup 的运行时代码，只消费「产物 + sourcemap」。
  * 这样 CLI 能离线分析任意 rollup 产物，将来接 Webpack / Rspack / esbuild
