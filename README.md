@@ -1,10 +1,12 @@
 # vite-plugin-bundle-guardian
 
-[![repo](https://img.shields.io/badge/repo-Gitee-FF4A17)](https://gitee.com/north-shallow-butterfly/vite-plugin-bundle-guardian)
+[![repo](https://img.shields.io/badge/repo-GitHub-181717?logo=github)](https://github.com/bei-qian-die/bundle-guardian)
 ![npm](https://img.shields.io/npm/v/vite-plugin-bundle-guardian)
 ![license](https://img.shields.io/badge/license-MIT-green)
+![online](https://img.shields.io/badge/online-analyzer-FF4A17)
 
-> 仓库：<https://gitee.com/north-shallow-butterfly/vite-plugin-bundle-guardian>（`.github/workflows/` 里的两个 workflow 在 Gitee Go / GitHub Actions 上都能直接用）
+> 仓库：<https://github.com/bei-qian-die/bundle-guardian>（Gitee 镜像：<https://gitee.com/north-shallow-butterfly/vite-plugin-bundle-guardian>；`.github/workflows/` 里的两个 workflow 在 Gitee Go / GitHub Actions 上都能直接用）
+> 在线分析器：<https://qiu-portfolio.app.workbuddy.host/analyzer/?sharecode=5EF3LGDWAO>
 
 > **构建产物治理插件：体积守护 + 依赖分析**
 > 让「包体积失控」从**事后发现**变成**提交即拦截**。
